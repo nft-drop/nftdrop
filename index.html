@@ -63,7 +63,7 @@ main{padding:0 14px 40px;max-width:900px;margin:auto}
 @keyframes shake{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
 @keyframes flash{30%{filter:drop-shadow(0 0 40px #35e07a)}}
 .wheelbox>svg{width:100%;height:100%;filter:drop-shadow(0 0 18px #2aabee55)}
-.arrow{position:absolute;inset:0;transition:transform 5.2s cubic-bezier(.1,.7,.08,1)}
+.arrow{position:absolute;inset:0;transition:transform 7.8s cubic-bezier(.12,.72,.08,1)}
 .arrow svg{width:100%;height:100%;filter:drop-shadow(0 0 7px #ff4d6dcc) drop-shadow(0 2px 3px #000a)}
 #win{filter:drop-shadow(0 0 6px #ffffffcc)}
 .spin2{transform-box:fill-box;transform-origin:center;animation:rot 28s linear infinite}
@@ -100,22 +100,23 @@ main{padding:0 14px 40px;max-width:900px;margin:auto}
 input{width:100%;padding:14px;border-radius:12px;border:1px solid #333a4d;background:#171a26;color:#fff;font-size:16px;margin-bottom:10px;outline:0}
 input:focus{border-color:var(--acc)}
 .err{color:#ff7a90;min-height:20px;font-size:14px;margin-bottom:8px}
-.av{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#fff;margin:0 auto 8px}
+.av{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#fff;margin:0 auto 8px;position:relative;isolation:isolate}
 .pf{text-align:center;margin:10px 0}.pf h2{margin:0}
 .stats{display:flex;gap:8px;margin:12px 0}.stats div{flex:1;background:var(--card);border-radius:12px;padding:10px;text-align:center;font-size:12px;color:var(--mut)}.stats b{display:block;color:var(--gold);font-size:16px}
 .pod{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;padding:12px;margin-bottom:8px;cursor:pointer;border:1px solid #262a38;transition:.2s}
 .pod:active{transform:scale(.98)}
-.pod .m{font-size:30px}.pod .nm{flex:1;min-width:0}.pod .nm b{display:block;font-size:16px;overflow:hidden;text-overflow:ellipsis}.pod .nm span{font-size:12px;color:var(--mut)}.pod .tt{color:var(--gold);font-weight:900;text-align:right}.pod .tt small{display:block;color:var(--mut);font-weight:400;font-size:11px}
+.pod .m{font-size:30px}.pod .nm{flex:1;min-width:0}.pod .nm b{display:block;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pod .nm span{font-size:12px;color:var(--mut)}.pod .tt{color:var(--gold);font-weight:900;text-align:right}.pod .tt small{display:block;color:var(--mut);font-weight:400;font-size:11px}
 .pod.g1{border-color:#ffc83d;box-shadow:0 0 24px #ffc83d44}.pod.g2{border-color:#c0c8d8}.pod.g3{border-color:#cd7f32}
 .back{background:none;border:0;color:var(--acc);font-size:15px;font-weight:700;padding:6px 0}
 /* ===== VIP ===== */
 .vn{background:linear-gradient(100deg,#b8860b 0%,#ffd700 25%,#fff8c4 50%,#ffd700 75%,#b8860b 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;font-weight:900;animation:vflow 2.6s linear infinite;filter:drop-shadow(0 0 6px rgba(255,200,40,.65))}
 @keyframes vflow{to{background-position:-250% 0}}
-.vb{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:900;letter-spacing:1px;color:#3a2600;-webkit-text-fill-color:#3a2600;background:linear-gradient(135deg,#fff3a0,#ffc72c,#e09a00,#fff3a0);background-size:250% 250%;animation:vbg 3s ease infinite;box-shadow:0 0 12px rgba(255,200,40,.75),inset 0 1px 0 #fffbd0;vertical-align:middle;position:relative;overflow:hidden;text-shadow:none}
+.vb{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:900;letter-spacing:1px;color:#3a2600;-webkit-text-fill-color:#3a2600;background:linear-gradient(135deg,#fff3a0,#ffc72c,#e09a00,#fff3a0);background-size:250% 250%;animation:vbg 3s ease infinite;box-shadow:0 0 12px rgba(255,200,40,.75),inset 0 1px 0 #fffbd0;vertical-align:middle;position:relative;overflow:hidden;text-shadow:none;white-space:nowrap;flex-shrink:0}
 .vb::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.95),transparent);transform:skewX(-20deg);animation:shine 2.4s infinite}
 @keyframes vbg{50%{background-position:100% 100%}}
-.av.vip{box-shadow:0 0 0 3px #ffd700,0 0 22px rgba(255,200,40,.8);animation:vglow 2s ease-in-out infinite alternate}
-@keyframes vglow{to{box-shadow:0 0 0 3px #fff0a0,0 0 40px rgba(255,215,60,1)}}
+.av.vip{box-shadow:0 0 22px rgba(255,200,40,.7);animation:vglow 2s ease-in-out infinite alternate}
+.av.vip::before{content:"";position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(from var(--ang,0deg),#ffd700,#fffbd0,#ff9f1c,#ffd700);z-index:-1;animation:angs 2.6s linear infinite;pointer-events:none}
+@keyframes vglow{from{box-shadow:0 0 14px rgba(255,200,40,.55)}to{box-shadow:0 0 36px rgba(255,215,60,1)}}
 .pod.vip{border-color:rgba(255,215,60,.95)!important;background:linear-gradient(135deg,rgba(255,215,60,.22),rgba(255,255,255,.05))!important;box-shadow:0 0 26px rgba(255,200,40,.4)!important}
 .vipbox{display:flex;flex-direction:column;gap:8px;margin:12px 0;padding:14px;border-radius:22px;border:1px solid rgba(255,215,60,.6);background:linear-gradient(135deg,rgba(255,215,60,.2),rgba(255,160,30,.07));box-shadow:0 0 24px rgba(255,200,40,.25);text-align:center}
 .vipbox b{display:block;color:#ffd75e;font-size:16px}.vipbox span{font-size:12px;color:#d8cfa8}
@@ -180,7 +181,6 @@ input:focus{box-shadow:0 0 0 3px #2aabee44,0 0 22px #2aabee55}
 .vb{background-size:260% 260%;animation:vbg 2.8s ease infinite}
 .pf h2 .vn{font-size:24px}
 @property --ang{syntax:"<angle>";initial-value:0deg;inherits:false}
-.av.vip{border:3px solid transparent;background:linear-gradient(var(--avc),var(--avc)) padding-box,conic-gradient(from var(--ang),#ffd700,#fffbd0,#ff9f1c,#ffd700) border-box!important;animation:angs 2.6s linear infinite,vglow 2s ease-in-out infinite alternate;box-shadow:0 0 22px rgba(255,200,40,.7)}
 @keyframes angs{to{--ang:360deg}}
 .pod.vip{background:linear-gradient(110deg,rgba(255,215,60,.18),rgba(255,255,255,.04),rgba(255,215,60,.18));background-size:220% 100%;animation:vflow2 3.5s linear infinite}
 @keyframes vflow2{to{background-position:-220% 0}}
@@ -217,8 +217,17 @@ input:focus{box-shadow:0 0 0 3px #2aabee44,0 0 22px #2aabee55}
 nav{gap:4px}nav button{font-size:11px;padding:10px 0}
 .bdg{display:none;position:absolute;top:2px;right:3px;min-width:16px;height:16px;border-radius:8px;background:#ff4d6d;color:#fff;font-size:10px;line-height:16px;padding:0 4px;box-shadow:0 0 8px #ff4d6d}
 .crow{display:flex;align-items:center;gap:10px;padding:12px;margin-bottom:8px;border-radius:14px;background:var(--card);border:1px solid #262a38;cursor:pointer;transition:transform .35s var(--spring)}
-.crow:active{transform:scale(.97)}.crow b{display:block}.crow span{color:var(--mut);font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crow:active{transform:scale(.97)}.crow .cn{flex:1;min-width:0}.crow .cn b{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.crow .cn span{color:var(--mut);font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .crow .pc{background:#ff4d6d;color:#fff;border-radius:10px;padding:2px 8px;font-size:11px;font-weight:900;animation:gp 1.6s ease-in-out infinite alternate}
+.bb{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:900;letter-spacing:1px;vertical-align:middle;position:relative;overflow:hidden;white-space:nowrap;flex-shrink:0;color:#1a0505;-webkit-text-fill-color:#1a0505;background:linear-gradient(135deg,#ff6b6b,#c0243f,#ff4d6d,#c0243f);background-size:250% 250%;animation:vbg 3s ease infinite;box-shadow:0 0 12px rgba(255,77,109,.55),inset 0 1px 0 #ffb0b0}
+.bb::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.85),transparent);transform:skewX(-20deg);animation:shine 2.4s infinite}
+.banbox{margin:12px 0;padding:14px;border-radius:18px;border:1px solid #ff4d6d99;background:linear-gradient(135deg,rgba(255,40,60,.18),rgba(20,5,10,.85));box-shadow:0 0 22px rgba(255,40,60,.25);text-align:center}
+.banbox b{display:block;color:#ff6b7a;font-size:18px;font-weight:900;letter-spacing:1px;margin-bottom:6px}
+.banbox span{font-size:13px;color:#d8a0a8}
+#blocked{position:fixed;inset:0;z-index:60;background:var(--bg);display:none;align-items:center;justify-content:center;padding:24px}
+#blocked.show{display:flex}
+#blocked .lbox h1{color:#ff4d6d;font-size:22px;margin:0 0 10px}
+#blocked .lbox p{color:var(--mut);font-size:14px;line-height:1.45}
 .cname{font-weight:900;font-size:18px;text-align:center;margin:4px 0 8px}
 #msgs{display:flex;flex-direction:column;gap:6px;min-height:240px;max-height:52vh;overflow-y:auto;padding:8px 2px}
 .mg{max-width:82%;padding:9px 13px;border-radius:16px;font-size:14px;word-break:break-word;animation:tabin .35s var(--spring)}
@@ -233,6 +242,7 @@ select{width:100%;padding:12px;border-radius:12px;border:1px solid #333a4d;backg
 </head>
 <body>
 <div id="login"><div class="lbox"><h1>🎁 NFT Подарки</h1><p id="lmsg">Загрузка…</p><div id="lform" style="display:none"><input id="nick" maxlength="16" placeholder="Ник" autocomplete="username"><input id="pass" type="password" maxlength="40" placeholder="Пароль (от 6 символов)" autocomplete="current-password"><div class="err" id="lerr"></div><button class="btn" id="lbtn">Войти</button><button class="btn u" id="rbtn" style="margin-top:8px">Создать аккаунт</button></div></div></div>
+<div id="blocked"><div class="lbox"><h1>🚫 Ваш аккаунт был заблокирован!</h1><p id="breason"></p></div></div>
 <header><div class="logo">🎁 NFT CASES</div><div class="hr"><div class="bal" id="bal">0 ⭐</div><button class="gear" id="gear">⚙️</button></div></header>
 <nav><button data-t="r" class="on">Рулетка</button><button data-t="u">Апгрейд</button><button data-t="t">Топ</button><button data-t="f">Поиск</button><button data-t="c">Чаты<span class="bdg" id="cbdg"></span></button><button data-t="p">Профиль</button></nav>
 <main>
@@ -309,13 +319,13 @@ const total=p=>(p.bal||0)+(p.inv||[]).reduce((s,o)=>s+ITEMS[o.id].p,0);
 const gifts=p=>(p.inv||[]).reduce((s,o)=>s+ITEMS[o.id].p,0);
 const hue=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h};
 const NS=[{id:"purple",name:"Фиолетовый",p:200},{id:"green",name:"Зелёный",p:200},{id:"orange",name:"Оранжевый",p:200},{id:"sky",name:"Небесный",p:200},{id:"pink",name:"Розовый",p:250},{id:"teal",name:"Бирюзовый",p:250},{id:"yellow",name:"Жёлтый",p:300},{id:"rainbow",name:"Радужный",p:300},{id:"blood",name:"Кровавый",p:500,vip:true}];
-const nm=p=>{const st=NS.find(x=>x.id===p.ns);const n=st?`<span class="nk ${st.id}">${p.nick}</span>`:p.vip?`<span class="vn">${p.nick}</span>`:p.nick;return n+(p.vip?'<span class="vb">👑 VIP</span>':"")};
+const nm=p=>{if(p.blocked){const st=NS.find(x=>x.id===p.ns);const n=st?`<span class="nk ${st.id}">${p.nick}</span>`:p.nick;return n+'<span class="bb">заблокирован</span>'}const st=NS.find(x=>x.id===p.ns);const n=st?`<span class="nk ${st.id}">${p.nick}</span>`:p.vip?`<span class="vn">${p.nick}</span>`:p.nick;return n+(p.vip?'<span class="vb">👑 VIP</span>':"")};
 const shop=p=>`<div class="h2">Стили ника</div><div class="nsgrid">${NS.map(st=>{const owned=(p.own||[]).includes(st.id),on=p.ns===st.id,lock=st.vip&&!p.vip;return `<div class="nsc${on?" on":""}${lock&&!owned?" lock":""}"><div class="nsp"><span class="nk ${st.id}">${p.nick}</span></div><small>${st.name}${st.vip?" · VIP":""}</small>${on?'<button class="btn" data-nsoff="1">Снять</button>':owned?`<button class="btn u" data-nsuse="${st.id}">Надеть</button>`:`<button class="btn g" data-nsbuy="${st.id}">${lock?"🔒 ":""}${st.p} ⭐</button>`}</div>`}).join("")}</div>`;
 const vipBox=()=>`<div class="vipbox"><div><b>👑 VIP-статус</b><span>Золотой переливающийся ник с короной у всех: в топе, поиске и профиле</span></div><button class="btn g" data-vip="1">Купить за ${VIPP} ⭐</button></div>`;
-const av=(n,v)=>`<div class="av${v?" vip":""}" style="--avc:hsl(${hue(n)} 60% 45%);background:hsl(${hue(n)} 60% 45%)">${n[0].toUpperCase()}</div>`;
+const av=(n,v)=>{const h=hue(n);return `<div class="av${v?" vip":""}" style="--avh:${h};--avc:hsl(${h} 60% 45%);background:hsl(${h} 60% 45%)">${n[0].toUpperCase()}</div>`};
 function pick(){let r=Math.random()*SUMW;for(const x of ITEMS){r-=x.w;if(r<=0)return x}return ITEMS[0]}
 let st;const save=()=>{clearTimeout(st);st=setTimeout(()=>{S.t=Date.now();ref.set(S).catch(()=>{})},400)};
-const norm=d=>{const o=JSON.parse(JSON.stringify(d||{}));o.inv=Array.isArray(o.inv)?o.inv:[];o.bal=Number.isFinite(o.bal)?o.bal:1000;o.owner=o.owner===true;o.uid=Number.isFinite(o.uid)?o.uid:(o.inv.reduce((m,x)=>Math.max(m,x.uid||0),0)+1);return o};
+const norm=d=>{const o=JSON.parse(JSON.stringify(d||{}));o.inv=Array.isArray(o.inv)?o.inv:[];o.bal=Number.isFinite(o.bal)?o.bal:1000;o.owner=o.owner===true;o.uid=Number.isFinite(o.uid)?o.uid:(o.inv.reduce((m,x)=>Math.max(m,x.uid||0),0)+1);o.blocked=!!o.blocked;o.muted=!!o.muted;o.blockReason=o.blockReason||"";return o};
 // ---- вход ----
 function showLogin(msg){$("login").classList.remove("hide");$("lmsg").textContent=msg||"Введи ник, чтобы начать";$("lform").style.display="block"}
 const hex=n=>[...n].map(c=>c.codePointAt(0).toString(16)).join("");
@@ -331,6 +341,7 @@ async function doAuth(reg){
     uid=cred.user.uid;ref=db.collection("players").doc(uid);
     const snap=await ref.get();
     if(snap.exists){S=norm(snap.data())}else{S=norm({bal:1000,inv:[],uid:1});S.nick=nick;S.nl=nl;await ref.set(S)}
+    if(S.blocked){showBlocked(S.blockReason);authBusy=false;$("lbtn").disabled=$("rbtn").disabled=false;return}
     start();
   }catch(x){
     const c=x.code||"";
@@ -340,18 +351,25 @@ async function doAuth(reg){
 }
 $("lbtn").onclick=()=>doAuth(false);$("rbtn").onclick=()=>doAuth(true);
 $("pass").onkeydown=e=>{if(e.key==="Enter")doAuth(false)};
-function start(){$("login").classList.add("hide");show("r");render();startLive()}
+function showBlocked(reason){$("login").classList.add("hide");$("blocked").classList.add("show");$("breason").innerHTML="<b style='display:block;margin-bottom:8px;color:#ff7a90'>Причина:</b>"+esc(reason||"Не указана");stopLive()}
+function start(){
+  if(S&&S.blocked){showBlocked(S.blockReason);return}
+  $("blocked").classList.remove("show");$("login").classList.add("hide");show("r");render();startLive()
+}
 let auth;
 (()=>{
   if(!window.firebase||/ВСТАВЬ/.test(FIREBASE_CONFIG.apiKey)){$("lmsg").textContent="Сайт ещё не настроен: вставь настройки Firebase в начало index.html";return}
   try{
     firebase.initializeApp(FIREBASE_CONFIG);auth=firebase.auth();db=firebase.firestore();
     auth.onAuthStateChanged(async u=>{
-      if(!u){stopLive();S=null;showLogin("Войди или создай аккаунт");return}
+      if(!u){stopLive();S=null;$("blocked").classList.remove("show");showLogin("Войди или создай аккаунт");return}
       if(authBusy)return;
       uid=u.uid;ref=db.collection("players").doc(uid);
-      try{const snap=await ref.get();if(snap.exists){S=norm(snap.data());start()}else showLogin("Войди или создай аккаунт")}
-      catch(e){showLogin("Не удалось загрузить профиль. Проверь правила Firestore")}
+      try{
+        const snap=await ref.get();
+        if(snap.exists){S=norm(snap.data());start()}
+        else{await auth.signOut();showLogin("Войди или создай аккаунт")}
+      }catch(e){showLogin("Не удалось загрузить профиль. Проверь правила Firestore")}
     });
   }catch(e){$("lmsg").textContent="Ошибка подключения Firebase: "+e.message}
 })();
@@ -362,9 +380,10 @@ $("gear").onclick=()=>{if(!busy&&S){$("setinfo").innerHTML=av(S.nick,S.vip)+`<h2
 $("logout").onclick=()=>{if(busy)return;selA=[];selB=null;$("nick").value="";$("pass").value="";auth.signOut()};
 $("vback").onclick=()=>show("f");
 async function loadAll(){try{const q=await db.collection("players").limit(300).get();ALL=q.docs.map(d=>({id:d.id,...d.data()}))}catch(e){}return ALL}
-const prow=(p,i)=>`<div class="pod ${i<3?"g"+(i+1):""}${p.vip?" vip":""}" data-v="${p.id}"><div class="m">${["🥇","🥈","🥉"][i]||""}</div><div class="nm"><b>${nm(p)}</b><span>${p.id===uid?"это ты":"открыть профиль"}</span></div><div class="tt">${total(p)} ⭐<small>${p.bal} ⭐ + подарки ${gifts(p)}</small></div></div>`;
+const prow=(p,i)=>`<div class="pod ${i<3?"g"+(i+1):""}${p.vip&&!p.blocked?" vip":""}" data-v="${p.id}"><div class="m">${["🥇","🥈","🥉"][i]||""}</div><div class="nm"><b>${nm(p)}</b><span>${p.id===uid?"это ты":"открыть профиль"}</span></div><div class="tt">${total(p)} ⭐<small>${p.bal} ⭐ + подарки ${gifts(p)}</small></div></div>`;
 async function loadTop(){$("top").innerHTML='<div class="empty">Загрузка…</div>';await loadAll();const a=ALL.filter(p=>p.nick).sort((x,y)=>total(y)-total(x)).slice(0,3);$("top").innerHTML=a.length?a.map(prow).join(""):'<div class="empty">Пока никого</div>'}
-const prof0=(p,own,mid)=>`<div class="pf">${av(p.nick,p.vip)}<h2>${nm(p)}</h2></div>${own?(p.vip?'<div class="vipbox on">✨ У тебя активен VIP-статус</div>':vipBox()):""}<div class="stats"><div><b>${total(p)}</b>всего ⭐</div><div><b>${p.bal}</b>на балансе</div><div><b>${gifts(p)}</b>подарки (${(p.inv||[]).length})</div></div>${mid||""}<div class="grid">${(p.inv||[]).length?(p.inv||[]).slice().reverse().map(o=>`<div>${cardI(o,"",!own?`data-gift="${o.uid}"`:"")}${own?`<div class="row"><button class="btn g" data-sell="${o.uid}">Продать</button></div>`:""}${isOwner()?`<div class="row"><button class="btn r" data-del="${o.uid}" data-ot="${p.id||uid}">🗑 Удалить</button></div>`:""}</div>`).join(""):'<div class="empty" style="grid-column:1/-1">Подарков пока нет</div>'}</div>`;
+const banBox=p=>p.blocked?`<div class="banbox"><b>ЗАБЛОКИРОВАН</b><span>Причина: ${esc(p.blockReason||"Не указана")}</span></div>`:"";
+const prof0=(p,own,mid)=>`<div class="pf">${av(p.nick,p.vip&&!p.blocked)}<h2>${nm(p)}</h2></div>${banBox(p)}${own?(p.vip&&!p.blocked?'<div class="vipbox on">✨ У тебя активен VIP-статус</div>':(!p.blocked?vipBox():"")):""}<div class="stats"><div><b>${total(p)}</b>всего ⭐</div><div><b>${p.bal}</b>на балансе</div><div><b>${gifts(p)}</b>подарки (${(p.inv||[]).length})</div></div>${mid||""}<div class="grid">${(p.inv||[]).length?(p.inv||[]).slice().reverse().map(o=>`<div>${cardI(o,"",!own&&!p.blocked?`data-gift="${o.uid}"`:"")}${own?`<div class="row"><button class="btn g" data-sell="${o.uid}">Продать</button></div>`:""}${isOwner()?`<div class="row"><button class="btn r" data-del="${o.uid}" data-ot="${p.id||uid}">🗑 Удалить</button></div>`:""}</div>`).join(""):'<div class="empty" style="grid-column:1/-1">Подарков пока нет</div>'}</div>`;
 const prof=(p,own,mid)=>prof0(p,own,mid)+(own?shop(p):"");
 async function doSearch(){if(!ALL.length)await loadAll();const q=$("q").value.trim().toLowerCase();const a=ALL.filter(p=>p.nick&&p.nl.includes(q)).sort((x,y)=>total(y)-total(x)).slice(0,25);$("found").innerHTML=a.length?a.map(p=>prow(p,9)).join(""):'<div class="empty">Никого не нашли</div>'}
 $("q").oninput=doSearch;
@@ -395,6 +414,12 @@ document.addEventListener("click",e=>{
   const od=e.target.closest("[data-del]");if(od){if(od.dataset.arm){ownerGive(od.dataset.ot,0,null,0,{del:+od.dataset.del,msg:"Подарок удалён 🗑"})}else{od.dataset.arm="1";od.textContent="Точно? Нажми ещё раз";setTimeout(()=>{delete od.dataset.arm;od.textContent="🗑 Удалить"},3000)}return}
   const os=e.target.closest("[data-ost]");if(os){ownerStars(os);return}
   const og=e.target.closest("[data-ogf]");if(og){ownerGift(og);return}
+  const blk=e.target.closest("[data-block]");if(blk&&isOwner()){const reason=(blk.parentElement.querySelector(".breas")||{}).value||"";ownerGive(blk.dataset.block,0,null,0,{blocked:true,reason:reason.trim(),msg:"Игрок заблокирован 🚫"});return}
+  const unb=e.target.closest("[data-unblock]");if(unb&&isOwner()){ownerGive(unb.dataset.unblock,0,null,0,{blocked:false,msg:"Игрок разблокирован ✅"});return}
+  const mu=e.target.closest("[data-mute]");if(mu&&isOwner()){ownerGive(mu.dataset.mute,0,null,0,{muted:true,msg:"Игрок замучен 🔇"});return}
+  const um=e.target.closest("[data-unmute]");if(um&&isOwner()){ownerGive(um.dataset.unmute,0,null,0,{muted:false,msg:"Мут снят ✅"});return}
+  const da=e.target.closest("[data-delacc]");if(da&&isOwner()){ownerDelAcc(da.dataset.delacc);return}
+  const sg=e.target.closest("[data-sendgift]");if(sg&&!busy){openSendGift(sg.dataset.sendgift);return}
   const vp=e.target.closest("[data-vip]");if(vp&&!busy){buyVip();return}
   const nb=e.target.closest("[data-nsbuy]");if(nb&&!busy){buyNs(nb.dataset.nsbuy);return}
   const nu=e.target.closest("[data-nsuse]");if(nu&&!busy){S.ns=nu.dataset.nsuse;save();render();return}
@@ -442,7 +467,7 @@ $("upBtn").onclick=()=>{
     else{ov.className="ov show lose";ov.innerHTML=`<h3>ПРОИГРЫШ</h3>${froms.length>1?'<div class="lrow">'+froms.slice(0,3).map(f=>cardI(f)).join("")+'</div>':cardI(froms[0])}`;wb.classList.add("shake");burst(wb,["#ff4d6d","#555","#999"],24)}
     save();animBal();
     setTimeout(()=>{ov.className="ov";wb.classList.remove("flash","shake");busy=false;selA=[];selB=null;render()},2800);
-  },5400);
+  },8000);
 };
 // ---- эффекты ----
 let shownBal=null,balRaf=0;
@@ -481,8 +506,21 @@ function toast(msg,type){let t=$("toast");if(!t){t=document.createElement("div")
 // ===== ВЛАДЕЛЕЦ / ЧАТЫ / СДЕЛКИ =====
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const isOwner=()=>!!S&&(S.owner===true||S.ovner===true);
-const ovHead=p=>`<button class="btn" data-chat="${p.id}" style="margin:6px 0 10px">💬 Написать</button><div style="color:var(--mut);font-size:12px;text-align:center;margin-bottom:6px">Нажми на подарок, чтобы предложить сделку</div>`;
-const ownerPanel=p=>isOwner()?`<div class="vipbox" style="text-align:left"><b>🛠 Панель владельца</b><span>Игрок: ${nm(p)}</span><input class="ost" type="number" placeholder="Звёзды (минус — списать)"><button class="btn g" data-ost="1" data-ot="${p.id||uid}">Выдать звёзды</button><select class="ogid">${ITEMS.map(x=>`<option value="${x.id}">${x.n} — ${x.p} ⭐</option>`).join("")}</select><input class="ogsn" type="number" min="1" placeholder="Номер # (пусто — случайный)"><button class="btn u" data-ogf="1" data-ot="${p.id||uid}">Выдать подарок</button><button class="btn g" data-ovip="1" data-ot="${p.id||uid}">👑 Выдать VIP</button><button class="btn r" data-ovip="0" data-ot="${p.id||uid}">Забрать VIP</button></div>`:"";
+const ovHead=p=>{
+  if(p.blocked)return `<div style="color:var(--mut);font-size:12px;text-align:center;margin:8px 0">Игрок заблокирован</div>`;
+  const muted=p.muted||S.muted;
+  return `${muted?`<div style="color:#ff7a90;font-size:12px;text-align:center;margin:6px 0">🔇 Чат недоступен (мут)</div>`:`<button class="btn" data-chat="${p.id}" style="margin:6px 0 10px">💬 Написать</button>`}
+  <button class="btn u" data-sendgift="${p.id}" style="margin:0 0 8px">🎁 Подарить подарок</button>
+  <div style="color:var(--mut);font-size:12px;text-align:center;margin-bottom:6px">Нажми на подарок, чтобы предложить сделку</div>`};
+const ownerPanel=p=>isOwner()?`<div class="vipbox" style="text-align:left"><b>🛠 Панель владельца</b><span>Игрок: ${nm(p)}</span>
+<input class="ost" type="number" placeholder="Звёзды (минус — списать)"><button class="btn g" data-ost="1" data-ot="${p.id||uid}">Выдать звёзды</button>
+<select class="ogid">${ITEMS.map(x=>`<option value="${x.id}">${x.n} — ${x.p} ⭐</option>`).join("")}</select>
+<input class="ogsn" type="number" min="1" placeholder="Номер # (пусто — случайный)"><button class="btn u" data-ogf="1" data-ot="${p.id||uid}">Выдать подарок</button>
+<button class="btn g" data-ovip="1" data-ot="${p.id||uid}">👑 Выдать VIP</button><button class="btn r" data-ovip="0" data-ot="${p.id||uid}">Забрать VIP</button>
+${p.blocked?`<button class="btn u" data-unblock="${p.id||uid}">Разблокировать</button>`:`<input class="breas" placeholder="Причина блокировки" maxlength="200"><button class="btn r" data-block="${p.id||uid}">🚫 Заблокировать</button>`}
+${p.muted?`<button class="btn u" data-unmute="${p.id||uid}">Снять мут</button>`:`<button class="btn r" data-mute="${p.id||uid}">🔇 Замутить</button>`}
+<button class="btn r" data-delacc="${p.id||uid}" style="margin-top:6px">🗑 Удалить аккаунт</button>
+</div>`:"";
 async function ownerGive(tid,stars,gid,sn,ex){
   const r=db.collection("players").doc(tid);
   try{
@@ -492,13 +530,49 @@ async function ownerGive(tid,stars,gid,sn,ex){
       const up={bal,inv:inv,uid:u,t:Date.now()};
       if(ex&&ex.del!=null)up.inv=inv.filter(o=>o.uid!==ex.del);
       if(ex&&ex.vip!==undefined){up.vip=ex.vip;if(!ex.vip&&d.ns==="blood")up.ns=null}
+      if(ex&&ex.blocked!==undefined){up.blocked=!!ex.blocked;up.blockReason=ex.blocked?(ex.reason||""):"";if(ex.blocked)up.vip=false}
+      if(ex&&ex.muted!==undefined)up.muted=!!ex.muted;
       tx.update(r,up)});
     toast((ex&&ex.msg)||"Выдано ✅","ok");await loadAll();
+    if(tid===uid){S=norm((await ref.get()).data());if(S.blocked){showBlocked(S.blockReason);return}render()}
     if(tid!==uid&&vid===tid){const p=ALL.find(x=>x.id===tid);if(p)$("other").innerHTML=prof(p,false,ovHead(p))+ownerPanel(p)}
   }catch(e){toast("Ошибка: "+e.message)}
 }
 function ownerStars(b){const v=Math.trunc(+b.parentElement.querySelector(".ost").value);if(!v){toast("Введи число звёзд");return}ownerGive(b.dataset.ot,v,null,0)}
 function ownerGift(b){const p=b.parentElement;ownerGive(b.dataset.ot,0,+p.querySelector(".ogid").value,Math.floor(+p.querySelector(".ogsn").value)||0)}
+async function ownerDelAcc(tid){
+  if(!confirm("Удалить аккаунт игрока навсегда? Данные пропадут."))return;
+  try{
+    await db.collection("players").doc(tid).delete();
+    toast("Аккаунт удалён","ok");
+    if(tid===uid){await auth.signOut();return}
+    await loadAll();
+    if(vid===tid){show("f");$("other").innerHTML=""}
+  }catch(e){toast("Ошибка: "+e.message)}
+}
+function openSendGift(tid){
+  if(!S||S.muted||S.blocked){toast("Недоступно");return}
+  const p=ALL.find(x=>x.id===tid);if(!p||p.blocked){toast("Игрок недоступен");return}
+  $("tbox").innerHTML=`<h2>Подарить подарок</h2><p style="color:var(--mut);font-size:13px;margin:0 0 8px">Для ${esc(p.nick)}. Спишется с твоего баланса.</p>
+  <select id="sgid">${ITEMS.map(x=>`<option value="${x.id}">${x.n} — ${x.p} ⭐</option>`).join("")}</select>
+  <div class="row"><button class="btn u" id="sggo">Подарить</button><button class="btn r" id="sgno">Отмена</button></div>`;
+  $("tmodal").classList.add("show");
+  $("sgno").onclick=()=>$("tmodal").classList.remove("show");
+  $("sggo").onclick=async()=>{
+    const gid=+$("sgid").value,it=ITEMS[gid],price=it.p;
+    if(S.bal<price){toast("Не хватает звёзд — нужно "+price+" ⭐");return}
+    $("sggo").disabled=true;
+    try{
+      S.bal-=price;clearTimeout(st);S.t=Date.now();await ref.set(S);
+      await ownerGive(tid,0,gid,0,{msg:"Подарок отправлен 🎁"});
+      const cr=db.collection("chats").doc(chatId(tid));
+      await cr.set({users:[uid,tid],names:{[uid]:S.nick,[tid]:p.nick}},{merge:true});
+      await cr.collection("msgs").add({type:"text",from:uid,text:"🎁 "+S.nick+" подарил(а) тебе «"+it.n+"»!",t:Date.now()});
+      await cr.update({last:"🎁 Подарок: "+it.n,lt:Date.now()});
+      $("tmodal").classList.remove("show");render();bump();toast("Подарок отправлен!","ok");
+    }catch(e){S.bal+=price;save();render();toast("Ошибка: "+e.message);$("sggo").disabled=false}
+  };
+}
 let CH=[],TR={},MSGS=[],curChat=null,unsubMsg=null,unsubs=[],liveOn=false;const settling=new Set();
 const chatId=o=>[uid,o].sort().join("_");
 const pendIn=()=>Object.values(TR).filter(t=>t.to===uid&&t.status==="pending");
@@ -508,8 +582,10 @@ function stopLive(){unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];if(unsubMs
 function startLive(){
   if(liveOn)return;liveOn=true;const er=e=>console.warn(e.message);
   unsubs.push(ref.onSnapshot(snap=>{
-    if(!snap.exists||snap.metadata.hasPendingWrites||!S)return;const d=snap.data();
+    if(!snap.exists){if(S){S=null;auth.signOut()}return}
+    if(snap.metadata.hasPendingWrites||!S)return;const d=snap.data();
     if(d.t&&d.t!==S.t&&d.t>(S.t||0)){const dl=(d.bal||0)-S.bal,gi=(d.inv||[]).length-S.inv.length;S=norm(d);
+      if(S.blocked){showBlocked(S.blockReason);return}
       if(dl||gi>0)toast("🎁 Профиль обновлён"+(dl?": "+(dl>0?"+":"")+dl+" ⭐":"")+(gi>0?", новый подарок":""),"ok");
       if(!busy)render()}},er));
   unsubs.push(db.collection("chats").where("users","array-contains",uid).onSnapshot(s=>{CH=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.lt||0)-(a.lt||0));if(onC()&&!curChat)drawChats()},er));
@@ -567,11 +643,13 @@ async function sendOffer(p,g){
 const pnm=id=>{const p=ALL.find(x=>x.id===id);return p?nm(p):esc(((CH.find(c=>c.users.includes(id))||{}).names||{})[id]||"Игрок")};
 function drawChats(){
   const L=CH.filter(c=>c.last);
-  $("chats").innerHTML=L.length?L.map(c=>{const o=c.users.find(x=>x!==uid),n=pendIn().filter(t=>t.from===o).length,nn=(c.names||{})[o]||"?";return `<div class="crow" data-chat="${o}"><div class="av" style="width:42px;height:42px;font-size:18px;margin:0;flex:none;background:hsl(${hue(nn)} 60% 45%)">${esc(nn[0].toUpperCase())}</div><div style="flex:1;min-width:0"><b>${pnm(o)}</b><span>${esc(c.last)}</span></div>${n?`<div class="pc">🎁 ${n}</div>`:""}</div>`}).join(""):'<div class="empty">Чатов нет</div>'}
-$("cq").oninput=async()=>{const q=$("cq").value.trim().toLowerCase();if(!q){$("cfound").innerHTML="";return}if(!ALL.length)await loadAll();const a=ALL.filter(p=>p.id!==uid&&p.nick&&p.nl.includes(q)).slice(0,8);$("cfound").innerHTML=a.length?a.map(p=>`<div class="crow" data-chat="${p.id}"><b>${nm(p)}</b></div>`).join(""):'<div class="empty">Никого не нашли</div>'};
+  $("chats").innerHTML=L.length?L.map(c=>{const o=c.users.find(x=>x!==uid),n=pendIn().filter(t=>t.from===o).length,nn=(c.names||{})[o]||"?",p=ALL.find(x=>x.id===o);const vipRing=p&&p.vip&&!p.blocked;return `<div class="crow" data-chat="${o}"><div class="av${vipRing?" vip":""}" style="width:42px;height:42px;font-size:18px;margin:0;flex:none;--avh:${hue(nn)};background:hsl(${hue(nn)} 60% 45%)">${esc(nn[0].toUpperCase())}</div><div class="cn"><b>${pnm(o)}</b><span>${esc(c.last)}</span></div>${n?`<div class="pc">🎁 ${n}</div>`:""}</div>`}).join(""):'<div class="empty">Чатов нет</div>'}
+$("cq").oninput=async()=>{const q=$("cq").value.trim().toLowerCase();if(!q){$("cfound").innerHTML="";return}if(!ALL.length)await loadAll();const a=ALL.filter(p=>p.id!==uid&&p.nick&&p.nl.includes(q)).slice(0,8);$("cfound").innerHTML=a.length?a.map(p=>`<div class="crow" data-chat="${p.id}"><div class="cn"><b>${nm(p)}</b></div></div>`).join(""):'<div class="empty">Никого не нашли</div>'};
 function showChats(){$("clist").style.display=curChat?"none":"block";$("cview").style.display=curChat?"block":"none";if(curChat)drawView();else drawChats()}
 async function openChat(o){
+  if(S&&S.muted){toast("Ты в муте — чат недоступен");return}
   if(!ALL.find(x=>x.id===o))await loadAll();const p=ALL.find(x=>x.id===o);if(!p||o===uid)return;
+  if(p.muted||p.blocked){toast(p.blocked?"Игрок заблокирован":"Игрок в муте — написать нельзя");return}
   try{await db.collection("chats").doc(chatId(o)).set({users:[uid,o],names:{[uid]:S.nick,[o]:p.nick}},{merge:true})}catch(e){toast("Не удалось открыть чат");return}
   if(unsubMsg)unsubMsg();MSGS=[];curChat={id:chatId(o),other:o};
   unsubMsg=db.collection("chats").doc(curChat.id).collection("msgs").orderBy("t").limitToLast(100).onSnapshot(s=>{MSGS=s.docs.map(d=>({id:d.id,...d.data()}));if(curChat)drawView(true)},e=>console.warn(e.message));
@@ -589,8 +667,13 @@ function drawView(sc){
   const el=$("msgs"),atEnd=el.scrollTop+el.clientHeight>=el.scrollHeight-40;
   el.innerHTML=MSGS.length?MSGS.map(m=>m.type==="trade"?tradeCard(m):`<div class="mg ${m.from===uid?"me":"o"}">${esc(m.text)}</div>`).join(""):'<div class="empty">Напиши первое сообщение</div>';
   if(sc||atEnd)el.scrollTop=el.scrollHeight}
-async function sendMsg(){const txt=$("cmsg").value.trim().slice(0,300);if(!txt||!curChat)return;$("cmsg").value="";const cr=db.collection("chats").doc(curChat.id);
-  try{await cr.collection("msgs").add({type:"text",from:uid,text:txt,t:Date.now()});await cr.update({last:txt.slice(0,40),lt:Date.now()})}catch(e){toast("Не отправилось")}}
+async function sendMsg(){
+  if(S&&S.muted){toast("Ты в муте — сообщения отправлять нельзя");return}
+  const txt=$("cmsg").value.trim().slice(0,300);if(!txt||!curChat)return;
+  const other=ALL.find(x=>x.id===curChat.other);if(other&&(other.muted||other.blocked)){toast("Нельзя написать этому игроку");return}
+  $("cmsg").value="";const cr=db.collection("chats").doc(curChat.id);
+  try{await cr.collection("msgs").add({type:"text",from:uid,text:txt,t:Date.now()});await cr.update({last:txt.slice(0,40),lt:Date.now()})}catch(e){toast("Не отправилось")}
+}
 $("csend").onclick=sendMsg;$("cmsg").onkeydown=e=>{if(e.key==="Enter")sendMsg()};
 </script>
 </body>
