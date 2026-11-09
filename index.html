@@ -364,11 +364,11 @@ $("vback").onclick=()=>show("f");
 async function loadAll(){try{const q=await db.collection("players").limit(300).get();ALL=q.docs.map(d=>({id:d.id,...d.data()}))}catch(e){}return ALL}
 const prow=(p,i)=>`<div class="pod ${i<3?"g"+(i+1):""}${p.vip?" vip":""}" data-v="${p.id}"><div class="m">${["🥇","🥈","🥉"][i]||""}</div><div class="nm"><b>${nm(p)}</b><span>${p.id===uid?"это ты":"открыть профиль"}</span></div><div class="tt">${total(p)} ⭐<small>${p.bal} ⭐ + подарки ${gifts(p)}</small></div></div>`;
 async function loadTop(){$("top").innerHTML='<div class="empty">Загрузка…</div>';await loadAll();const a=ALL.filter(p=>p.nick).sort((x,y)=>total(y)-total(x)).slice(0,3);$("top").innerHTML=a.length?a.map(prow).join(""):'<div class="empty">Пока никого</div>'}
-const prof0=(p,own)=>`<div class="pf">${av(p.nick,p.vip)}<h2>${nm(p)}</h2></div>${own?(p.vip?'<div class="vipbox on">✨ У тебя активен VIP-статус</div>':vipBox()):""}<div class="stats"><div><b>${total(p)}</b>всего ⭐</div><div><b>${p.bal}</b>на балансе</div><div><b>${gifts(p)}</b>подарки (${(p.inv||[]).length})</div></div><div class="grid">${(p.inv||[]).length?(p.inv||[]).slice().reverse().map(o=>`<div>${cardI(o,"",!own?`data-gift="${o.uid}"`:"")}${own?`<div class="row"><button class="btn g" data-sell="${o.uid}">Продать</button></div>`:""}</div>`).join(""):'<div class="empty" style="grid-column:1/-1">Подарков пока нет</div>'}</div>`;
-const prof=(p,own)=>prof0(p,own)+(own?shop(p):"");
+const prof0=(p,own,mid)=>`<div class="pf">${av(p.nick,p.vip)}<h2>${nm(p)}</h2></div>${own?(p.vip?'<div class="vipbox on">✨ У тебя активен VIP-статус</div>':vipBox()):""}<div class="stats"><div><b>${total(p)}</b>всего ⭐</div><div><b>${p.bal}</b>на балансе</div><div><b>${gifts(p)}</b>подарки (${(p.inv||[]).length})</div></div>${mid||""}<div class="grid">${(p.inv||[]).length?(p.inv||[]).slice().reverse().map(o=>`<div>${cardI(o,"",!own?`data-gift="${o.uid}"`:"")}${own?`<div class="row"><button class="btn g" data-sell="${o.uid}">Продать</button></div>`:""}${isOwner()?`<div class="row"><button class="btn r" data-del="${o.uid}" data-ot="${p.id||uid}">🗑 Удалить</button></div>`:""}</div>`).join(""):'<div class="empty" style="grid-column:1/-1">Подарков пока нет</div>'}</div>`;
+const prof=(p,own,mid)=>prof0(p,own,mid)+(own?shop(p):"");
 async function doSearch(){if(!ALL.length)await loadAll();const q=$("q").value.trim().toLowerCase();const a=ALL.filter(p=>p.nick&&p.nl.includes(q)).sort((x,y)=>total(y)-total(x)).slice(0,25);$("found").innerHTML=a.length?a.map(p=>prow(p,9)).join(""):'<div class="empty">Никого не нашли</div>'}
 $("q").oninput=doSearch;
-async function openV(id){if(id===uid){show("p");return}await loadAll();const p=ALL.find(x=>x.id===id);if(!p)return;vid=id;$("other").innerHTML=ovHead(p)+prof(p,false)+ownerPanel(p);show("v")}
+async function openV(id){if(id===uid){show("p");return}await loadAll();const p=ALL.find(x=>x.id===id);if(!p)return;vid=id;$("other").innerHTML=prof(p,false,ovHead(p))+ownerPanel(p);show("v")}
 // ---- рендер ----
 function chance(){if(!selA.length||selB==null)return 0;const f=sumA(),t=ITEMS[selB].p;return t<=f?0:Math.max(1,Math.min(75,f/t*95))}
 const sumA=()=>selA.reduce((s,u)=>{const o=S.inv.find(o=>o.uid===u);return s+(o?ITEMS[o.id].p:0)},0);
@@ -391,6 +391,8 @@ document.addEventListener("click",e=>{
   const cr=e.target.closest("[data-chat]");if(cr&&!busy){openChat(cr.dataset.chat);return}
   const ta=e.target.closest("[data-tact]");if(ta&&!busy){tradeAct(ta.dataset.tid,ta.dataset.tact);return}
   const gf=e.target.closest("[data-gift]");if(gf&&!busy){openTrade(+gf.dataset.gift);return}
+  const ov=e.target.closest("[data-ovip]");if(ov){const on=ov.dataset.ovip==="1";ownerGive(ov.dataset.ot,0,null,0,{vip:on,msg:on?"VIP выдан 👑":"VIP забран"});return}
+  const od=e.target.closest("[data-del]");if(od){if(od.dataset.arm){ownerGive(od.dataset.ot,0,null,0,{del:+od.dataset.del,msg:"Подарок удалён 🗑"})}else{od.dataset.arm="1";od.textContent="Точно? Нажми ещё раз";setTimeout(()=>{delete od.dataset.arm;od.textContent="🗑 Удалить"},3000)}return}
   const os=e.target.closest("[data-ost]");if(os){ownerStars(os);return}
   const og=e.target.closest("[data-ogf]");if(og){ownerGift(og);return}
   const vp=e.target.closest("[data-vip]");if(vp&&!busy){buyVip();return}
@@ -480,16 +482,19 @@ function toast(msg,type){let t=$("toast");if(!t){t=document.createElement("div")
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const isOwner=()=>!!S&&(S.owner===true||S.ovner===true);
 const ovHead=p=>`<button class="btn" data-chat="${p.id}" style="margin:6px 0 10px">💬 Написать</button><div style="color:var(--mut);font-size:12px;text-align:center;margin-bottom:6px">Нажми на подарок, чтобы предложить сделку</div>`;
-const ownerPanel=p=>isOwner()?`<div class="vipbox" style="text-align:left"><b>🛠 Панель владельца</b><span>Игрок: ${nm(p)}</span><input class="ost" type="number" placeholder="Звёзды (минус — списать)"><button class="btn g" data-ost="1" data-ot="${p.id||uid}">Выдать звёзды</button><select class="ogid">${ITEMS.map(x=>`<option value="${x.id}">${x.n} — ${x.p} ⭐</option>`).join("")}</select><input class="ogsn" type="number" min="1" placeholder="Номер # (пусто — случайный)"><button class="btn u" data-ogf="1" data-ot="${p.id||uid}">Выдать подарок</button></div>`:"";
-async function ownerGive(tid,stars,gid,sn){
+const ownerPanel=p=>isOwner()?`<div class="vipbox" style="text-align:left"><b>🛠 Панель владельца</b><span>Игрок: ${nm(p)}</span><input class="ost" type="number" placeholder="Звёзды (минус — списать)"><button class="btn g" data-ost="1" data-ot="${p.id||uid}">Выдать звёзды</button><select class="ogid">${ITEMS.map(x=>`<option value="${x.id}">${x.n} — ${x.p} ⭐</option>`).join("")}</select><input class="ogsn" type="number" min="1" placeholder="Номер # (пусто — случайный)"><button class="btn u" data-ogf="1" data-ot="${p.id||uid}">Выдать подарок</button><button class="btn g" data-ovip="1" data-ot="${p.id||uid}">👑 Выдать VIP</button><button class="btn r" data-ovip="0" data-ot="${p.id||uid}">Забрать VIP</button></div>`:"";
+async function ownerGive(tid,stars,gid,sn,ex){
   const r=db.collection("players").doc(tid);
   try{
     await db.runTransaction(async tx=>{const s=await tx.get(r);if(!s.exists)throw new Error("игрок не найден");const d=s.data();const inv=Array.isArray(d.inv)?d.inv.slice():[];let u=Number.isFinite(d.uid)?d.uid:1,bal=Number.isFinite(d.bal)?d.bal:0;
       if(stars)bal=Math.max(0,bal+stars);
       if(gid!=null)inv.push({uid:u++,id:gid,sn:sn||1+rnd(9999),bd:rnd(8)});
-      tx.update(r,{bal,inv,uid:u,t:Date.now()})});
-    toast("Выдано ✅","ok");await loadAll();
-    if(tid!==uid&&vid===tid){const p=ALL.find(x=>x.id===tid);if(p)$("other").innerHTML=ovHead(p)+prof(p,false)+ownerPanel(p)}
+      const up={bal,inv:inv,uid:u,t:Date.now()};
+      if(ex&&ex.del!=null)up.inv=inv.filter(o=>o.uid!==ex.del);
+      if(ex&&ex.vip!==undefined){up.vip=ex.vip;if(!ex.vip&&d.ns==="blood")up.ns=null}
+      tx.update(r,up)});
+    toast((ex&&ex.msg)||"Выдано ✅","ok");await loadAll();
+    if(tid!==uid&&vid===tid){const p=ALL.find(x=>x.id===tid);if(p)$("other").innerHTML=prof(p,false,ovHead(p))+ownerPanel(p)}
   }catch(e){toast("Ошибка: "+e.message)}
 }
 function ownerStars(b){const v=Math.trunc(+b.parentElement.querySelector(".ost").value);if(!v){toast("Введи число звёзд");return}ownerGive(b.dataset.ot,v,null,0)}
