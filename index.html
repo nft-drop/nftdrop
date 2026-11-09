@@ -213,12 +213,28 @@ input:focus{box-shadow:0 0 0 3px #2aabee44,0 0 22px #2aabee55}
 #toast.out{animation:tout .5s both}
 @keyframes tin{0%{transform:translate(-50%,170%);opacity:0}55%{transform:translate(-50%,-16%);opacity:1}75%{transform:translate(-50%,6%)}90%{transform:translate(-50%,-2%)}100%{transform:translate(-50%,0);opacity:1}}
 @keyframes tout{0%{transform:translate(-50%,0);opacity:1}25%{transform:translate(-50%,-12%)}100%{transform:translate(-50%,170%);opacity:0}}
+/* ===== ЧАТЫ / СДЕЛКИ ===== */
+nav{gap:4px}nav button{font-size:11px;padding:10px 0}
+.bdg{display:none;position:absolute;top:2px;right:3px;min-width:16px;height:16px;border-radius:8px;background:#ff4d6d;color:#fff;font-size:10px;line-height:16px;padding:0 4px;box-shadow:0 0 8px #ff4d6d}
+.crow{display:flex;align-items:center;gap:10px;padding:12px;margin-bottom:8px;border-radius:14px;background:var(--card);border:1px solid #262a38;cursor:pointer;transition:transform .35s var(--spring)}
+.crow:active{transform:scale(.97)}.crow b{display:block}.crow span{color:var(--mut);font-size:12px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crow .pc{background:#ff4d6d;color:#fff;border-radius:10px;padding:2px 8px;font-size:11px;font-weight:900;animation:gp 1.6s ease-in-out infinite alternate}
+.cname{font-weight:900;font-size:18px;text-align:center;margin:4px 0 8px}
+#msgs{display:flex;flex-direction:column;gap:6px;min-height:240px;max-height:52vh;overflow-y:auto;padding:8px 2px}
+.mg{max-width:82%;padding:9px 13px;border-radius:16px;font-size:14px;word-break:break-word;animation:tabin .35s var(--spring)}
+.mg.me{align-self:flex-end;background:linear-gradient(135deg,#2aabee,#7c5cff);border-bottom-right-radius:4px}
+.mg.o{align-self:flex-start;background:var(--card);border:1px solid #262a38;border-bottom-left-radius:4px}
+.trd{align-self:center;width:min(260px,94%);background:var(--card);border:1px solid #ffc83d77;border-radius:18px;padding:12px;text-align:center;box-shadow:0 0 18px #ffc83d33;animation:tabin .4s var(--spring)}
+.trd .sk{margin:8px auto;width:132px}.trd .st{font-weight:800;margin-top:6px}
+.trd .row{display:flex;gap:8px}.trd>.btn{padding:8px;font-size:13px}
+.cin{display:flex;gap:8px;margin-top:8px}.cin input{margin:0;flex:1}.cin .btn{width:58px;padding:10px}
+select{width:100%;padding:12px;border-radius:12px;border:1px solid #333a4d;background:#171a26;color:#fff;font-size:15px;margin-bottom:8px}
 </style>
 </head>
 <body>
 <div id="login"><div class="lbox"><h1>🎁 NFT Подарки</h1><p id="lmsg">Загрузка…</p><div id="lform" style="display:none"><input id="nick" maxlength="16" placeholder="Ник" autocomplete="username"><input id="pass" type="password" maxlength="40" placeholder="Пароль (от 6 символов)" autocomplete="current-password"><div class="err" id="lerr"></div><button class="btn" id="lbtn">Войти</button><button class="btn u" id="rbtn" style="margin-top:8px">Создать аккаунт</button></div></div></div>
 <header><div class="logo">🎁 NFT CASES</div><div class="hr"><div class="bal" id="bal">0 ⭐</div><button class="gear" id="gear">⚙️</button></div></header>
-<nav><button data-t="r" class="on">Рулетка</button><button data-t="u">Апгрейд</button><button data-t="t">Топ</button><button data-t="f">Поиск</button><button data-t="p">Профиль</button></nav>
+<nav><button data-t="r" class="on">Рулетка</button><button data-t="u">Апгрейд</button><button data-t="t">Топ</button><button data-t="f">Поиск</button><button data-t="c">Чаты<span class="bdg" id="cbdg"></span></button><button data-t="p">Профиль</button></nav>
 <main>
 <section class="tab on" id="t-r">
   <div class="strip-w"><div class="mark"></div><div class="fade l"></div><div class="fade r"></div><div class="strip" id="strip"></div></div>
@@ -241,6 +257,10 @@ input:focus{box-shadow:0 0 0 3px #2aabee44,0 0 22px #2aabee55}
 </section>
 <section class="tab" id="t-t"><div class="h2">🏆 Топ игроков по богатству</div><div id="top"></div></section>
 <section class="tab" id="t-f"><input id="q" placeholder="Поиск по нику…" autocomplete="off"><div id="found"></div></section>
+<section class="tab" id="t-c">
+  <div id="clist"><input id="cq" placeholder="Найти пользователя по нику…" autocomplete="off"><div id="cfound"></div><div class="h2">Чаты</div><div id="chats"></div></div>
+  <div id="cview" style="display:none"><button class="back" id="cback">← Назад</button><div class="cname" id="cname"></div><div id="msgs"></div><div class="cin"><input id="cmsg" maxlength="300" placeholder="Сообщение…" autocomplete="off"><button class="btn" id="csend">➤</button></div></div>
+</section>
 <section class="tab" id="t-p"><div id="me"></div></section>
 <section class="tab" id="t-v"><button class="back" id="vback">← Назад</button><div id="other"></div></section>
 <section class="tab" id="t-g">
@@ -250,6 +270,7 @@ input:focus{box-shadow:0 0 0 3px #2aabee44,0 0 22px #2aabee55}
   <p style="color:var(--mut);font-size:13px;text-align:center">После выхода можно войти снова с тем же ником — все подарки и звёзды сохранятся.</p>
 </section>
 </main>
+<div class="modal" id="tmodal"><div class="mbox" id="tbox"></div></div>
 <div class="modal" id="promo"><div class="mbox"><h2>🎟️ Промокод</h2><input id="pcode" placeholder="Введи промокод" autocomplete="off" autocapitalize="off"><div class="err" id="pmsg"></div><div class="row"><button class="btn" id="pgo">Активировать</button><button class="btn r" id="pclose">Закрыть</button></div></div></div>
 <div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
 <script>
@@ -294,7 +315,7 @@ const vipBox=()=>`<div class="vipbox"><div><b>👑 VIP-статус</b><span>З�
 const av=(n,v)=>`<div class="av${v?" vip":""}" style="--avc:hsl(${hue(n)} 60% 45%);background:hsl(${hue(n)} 60% 45%)">${n[0].toUpperCase()}</div>`;
 function pick(){let r=Math.random()*SUMW;for(const x of ITEMS){r-=x.w;if(r<=0)return x}return ITEMS[0]}
 let st;const save=()=>{clearTimeout(st);st=setTimeout(()=>{S.t=Date.now();ref.set(S).catch(()=>{})},400)};
-const norm=d=>{const o=JSON.parse(JSON.stringify(d||{}));o.inv=Array.isArray(o.inv)?o.inv:[];o.bal=Number.isFinite(o.bal)?o.bal:1000;o.uid=Number.isFinite(o.uid)?o.uid:(o.inv.reduce((m,x)=>Math.max(m,x.uid||0),0)+1);return o};
+const norm=d=>{const o=JSON.parse(JSON.stringify(d||{}));o.inv=Array.isArray(o.inv)?o.inv:[];o.bal=Number.isFinite(o.bal)?o.bal:1000;o.owner=o.owner===true;o.uid=Number.isFinite(o.uid)?o.uid:(o.inv.reduce((m,x)=>Math.max(m,x.uid||0),0)+1);return o};
 // ---- вход ----
 function showLogin(msg){$("login").classList.remove("hide");$("lmsg").textContent=msg||"Введи ник, чтобы начать";$("lform").style.display="block"}
 const hex=n=>[...n].map(c=>c.codePointAt(0).toString(16)).join("");
@@ -319,14 +340,14 @@ async function doAuth(reg){
 }
 $("lbtn").onclick=()=>doAuth(false);$("rbtn").onclick=()=>doAuth(true);
 $("pass").onkeydown=e=>{if(e.key==="Enter")doAuth(false)};
-function start(){$("login").classList.add("hide");show("r");render()}
+function start(){$("login").classList.add("hide");show("r");render();startLive()}
 let auth;
 (()=>{
   if(!window.firebase||/ВСТАВЬ/.test(FIREBASE_CONFIG.apiKey)){$("lmsg").textContent="Сайт ещё не настроен: вставь настройки Firebase в начало index.html";return}
   try{
     firebase.initializeApp(FIREBASE_CONFIG);auth=firebase.auth();db=firebase.firestore();
     auth.onAuthStateChanged(async u=>{
-      if(!u){S=null;showLogin("Войди или создай аккаунт");return}
+      if(!u){stopLive();S=null;showLogin("Войди или создай аккаунт");return}
       if(authBusy)return;
       uid=u.uid;ref=db.collection("players").doc(uid);
       try{const snap=await ref.get();if(snap.exists){S=norm(snap.data());start()}else showLogin("Войди или создай аккаунт")}
@@ -335,7 +356,7 @@ let auth;
   }catch(e){$("lmsg").textContent="Ошибка подключения Firebase: "+e.message}
 })();
 // ---- навигация ----
-function show(t){document.querySelectorAll("nav button,.tab").forEach(e=>e.classList.remove("on"));const b=document.querySelector(`nav button[data-t="${t}"]`);if(b)b.classList.add("on");$("t-"+t).classList.add("on");if(t==="t")loadTop();if(t==="f")doSearch();if(t==="p")render()}
+function show(t){document.querySelectorAll("nav button,.tab").forEach(e=>e.classList.remove("on"));const b=document.querySelector(`nav button[data-t="${t}"]`);if(b)b.classList.add("on");$("t-"+t).classList.add("on");if(t==="t")loadTop();if(t==="f")doSearch();if(t==="p")render();if(t==="c")showChats()}
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{if(!busy)show(b.dataset.t)});
 $("gear").onclick=()=>{if(!busy&&S){$("setinfo").innerHTML=av(S.nick,S.vip)+`<h2>${nm(S)}</h2><div style="color:var(--mut)">Всего: ${total(S)} ⭐</div>`;show("g")}};
 $("logout").onclick=()=>{if(busy)return;selA=[];selB=null;$("nick").value="";$("pass").value="";auth.signOut()};
@@ -343,18 +364,18 @@ $("vback").onclick=()=>show("f");
 async function loadAll(){try{const q=await db.collection("players").limit(300).get();ALL=q.docs.map(d=>({id:d.id,...d.data()}))}catch(e){}return ALL}
 const prow=(p,i)=>`<div class="pod ${i<3?"g"+(i+1):""}${p.vip?" vip":""}" data-v="${p.id}"><div class="m">${["🥇","🥈","🥉"][i]||""}</div><div class="nm"><b>${nm(p)}</b><span>${p.id===uid?"это ты":"открыть профиль"}</span></div><div class="tt">${total(p)} ⭐<small>${p.bal} ⭐ + подарки ${gifts(p)}</small></div></div>`;
 async function loadTop(){$("top").innerHTML='<div class="empty">Загрузка…</div>';await loadAll();const a=ALL.filter(p=>p.nick).sort((x,y)=>total(y)-total(x)).slice(0,3);$("top").innerHTML=a.length?a.map(prow).join(""):'<div class="empty">Пока никого</div>'}
-const prof0=(p,own)=>`<div class="pf">${av(p.nick,p.vip)}<h2>${nm(p)}</h2></div>${own?(p.vip?'<div class="vipbox on">✨ У тебя активен VIP-статус</div>':vipBox()):""}<div class="stats"><div><b>${total(p)}</b>всего ⭐</div><div><b>${p.bal}</b>на балансе</div><div><b>${gifts(p)}</b>подарки (${(p.inv||[]).length})</div></div><div class="grid">${(p.inv||[]).length?(p.inv||[]).slice().reverse().map(o=>`<div>${cardI(o)}${own?`<div class="row"><button class="btn g" data-sell="${o.uid}">Продать</button></div>`:""}</div>`).join(""):'<div class="empty" style="grid-column:1/-1">Подарков пока нет</div>'}</div>`;
+const prof0=(p,own)=>`<div class="pf">${av(p.nick,p.vip)}<h2>${nm(p)}</h2></div>${own?(p.vip?'<div class="vipbox on">✨ У тебя активен VIP-статус</div>':vipBox()):""}<div class="stats"><div><b>${total(p)}</b>всего ⭐</div><div><b>${p.bal}</b>на балансе</div><div><b>${gifts(p)}</b>подарки (${(p.inv||[]).length})</div></div><div class="grid">${(p.inv||[]).length?(p.inv||[]).slice().reverse().map(o=>`<div>${cardI(o,"",!own?`data-gift="${o.uid}"`:"")}${own?`<div class="row"><button class="btn g" data-sell="${o.uid}">Продать</button></div>`:""}</div>`).join(""):'<div class="empty" style="grid-column:1/-1">Подарков пока нет</div>'}</div>`;
 const prof=(p,own)=>prof0(p,own)+(own?shop(p):"");
 async function doSearch(){if(!ALL.length)await loadAll();const q=$("q").value.trim().toLowerCase();const a=ALL.filter(p=>p.nick&&p.nl.includes(q)).sort((x,y)=>total(y)-total(x)).slice(0,25);$("found").innerHTML=a.length?a.map(p=>prow(p,9)).join(""):'<div class="empty">Никого не нашли</div>'}
 $("q").oninput=doSearch;
-async function openV(id){if(id===uid){show("p");return}await loadAll();const p=ALL.find(x=>x.id===id);if(!p)return;$("other").innerHTML=prof(p,false);show("v")}
+async function openV(id){if(id===uid){show("p");return}await loadAll();const p=ALL.find(x=>x.id===id);if(!p)return;vid=id;$("other").innerHTML=ovHead(p)+prof(p,false)+ownerPanel(p);show("v")}
 // ---- рендер ----
 function chance(){if(!selA.length||selB==null)return 0;const f=sumA(),t=ITEMS[selB].p;return t<=f?0:Math.max(1,Math.min(75,f/t*95))}
 const sumA=()=>selA.reduce((s,u)=>{const o=S.inv.find(o=>o.uid===u);return s+(o?ITEMS[o.id].p:0)},0);
 function render(){
   if(!S)return;animBal();
   $("catalog").innerHTML=ITEMS.map(x=>card(x,null,"","",`<small>${pc(x)}</small>`)).join("");
-  $("me").innerHTML=prof(S,true);
+  $("me").innerHTML=prof(S,true)+ownerPanel(S);
   $("myList").innerHTML=S.inv.length?S.inv.slice().reverse().map(o=>cardI(o,selA.includes(o.uid)?"sel":"",`data-a="${o.uid}"`)).join(""):'<div class="empty" style="grid-column:1/-1">Нет подарков — открой кейс</div>';
   $("targets").innerHTML=ITEMS.filter(x=>x.p>sumA()).map(x=>card(x,null,selB===x.id?"sel":"",`data-b="${x.id}"`)).join("");
   $("slotA").innerHTML=selA.length>1?`<div class="slot" style="flex-direction:column;color:#fff;gap:4px"><b>${selA.length} подарков</b><i style="color:#ffc83d;font-style:normal;font-weight:800">${sumA()} ⭐</i></div>`:selA.length?cardI(S.inv.find(o=>o.uid===selA[0])):'<div class="slot">Твои подарки</div>';
@@ -367,6 +388,11 @@ function burst(el,colors,n=36){for(let i=0;i<n;i++){const p=document.createEleme
 let tapN=0,tapT;$("bal").onclick=()=>{tapN++;clearTimeout(tapT);tapT=setTimeout(()=>tapN=0,2000);if(tapN>=5){tapN=0;if(S&&!busy)openPromo()}};
 function sell(u){const i=S.inv.findIndex(o=>o.uid==u);if(i<0)return;S.bal+=ITEMS[S.inv[i].id].p;S.inv.splice(i,1);selA=selA.filter(x=>x!=u);if(selB!=null&&ITEMS[selB].p<=sumA())selB=null;save();render();bump()}
 document.addEventListener("click",e=>{
+  const cr=e.target.closest("[data-chat]");if(cr&&!busy){openChat(cr.dataset.chat);return}
+  const ta=e.target.closest("[data-tact]");if(ta&&!busy){tradeAct(ta.dataset.tid,ta.dataset.tact);return}
+  const gf=e.target.closest("[data-gift]");if(gf&&!busy){openTrade(+gf.dataset.gift);return}
+  const os=e.target.closest("[data-ost]");if(os){ownerStars(os);return}
+  const og=e.target.closest("[data-ogf]");if(og){ownerGift(og);return}
   const vp=e.target.closest("[data-vip]");if(vp&&!busy){buyVip();return}
   const nb=e.target.closest("[data-nsbuy]");if(nb&&!busy){buyNs(nb.dataset.nsbuy);return}
   const nu=e.target.closest("[data-nsuse]");if(nu&&!busy){S.ns=nu.dataset.nsuse;save();render();return}
@@ -450,6 +476,117 @@ let toastT;
 function toast(msg,type){let t=$("toast");if(!t){t=document.createElement("div");t.id="toast";document.body.appendChild(t)}
   clearTimeout(toastT);t.className="";void t.offsetWidth;t.textContent=msg;t.className=(type||"")+" in";
   toastT=setTimeout(()=>{t.className=(type||"")+" out"},2700)}
+// ===== ВЛАДЕЛЕЦ / ЧАТЫ / СДЕЛКИ =====
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const isOwner=()=>!!S&&(S.owner===true||S.ovner===true);
+const ovHead=p=>`<button class="btn" data-chat="${p.id}" style="margin:6px 0 10px">💬 Написать</button><div style="color:var(--mut);font-size:12px;text-align:center;margin-bottom:6px">Нажми на подарок, чтобы предложить сделку</div>`;
+const ownerPanel=p=>isOwner()?`<div class="vipbox" style="text-align:left"><b>🛠 Панель владельца</b><span>Игрок: ${nm(p)}</span><input class="ost" type="number" placeholder="Звёзды (минус — списать)"><button class="btn g" data-ost="1" data-ot="${p.id||uid}">Выдать звёзды</button><select class="ogid">${ITEMS.map(x=>`<option value="${x.id}">${x.n} — ${x.p} ⭐</option>`).join("")}</select><input class="ogsn" type="number" min="1" placeholder="Номер # (пусто — случайный)"><button class="btn u" data-ogf="1" data-ot="${p.id||uid}">Выдать подарок</button></div>`:"";
+async function ownerGive(tid,stars,gid,sn){
+  const r=db.collection("players").doc(tid);
+  try{
+    await db.runTransaction(async tx=>{const s=await tx.get(r);if(!s.exists)throw new Error("игрок не найден");const d=s.data();const inv=Array.isArray(d.inv)?d.inv.slice():[];let u=Number.isFinite(d.uid)?d.uid:1,bal=Number.isFinite(d.bal)?d.bal:0;
+      if(stars)bal=Math.max(0,bal+stars);
+      if(gid!=null)inv.push({uid:u++,id:gid,sn:sn||1+rnd(9999),bd:rnd(8)});
+      tx.update(r,{bal,inv,uid:u,t:Date.now()})});
+    toast("Выдано ✅","ok");await loadAll();
+    if(tid!==uid&&vid===tid){const p=ALL.find(x=>x.id===tid);if(p)$("other").innerHTML=ovHead(p)+prof(p,false)+ownerPanel(p)}
+  }catch(e){toast("Ошибка: "+e.message)}
+}
+function ownerStars(b){const v=Math.trunc(+b.parentElement.querySelector(".ost").value);if(!v){toast("Введи число звёзд");return}ownerGive(b.dataset.ot,v,null,0)}
+function ownerGift(b){const p=b.parentElement;ownerGive(b.dataset.ot,0,+p.querySelector(".ogid").value,Math.floor(+p.querySelector(".ogsn").value)||0)}
+let CH=[],TR={},MSGS=[],curChat=null,unsubMsg=null,unsubs=[],liveOn=false;const settling=new Set();
+const chatId=o=>[uid,o].sort().join("_");
+const pendIn=()=>Object.values(TR).filter(t=>t.to===uid&&t.status==="pending");
+function badge(){const n=pendIn().length,b=$("cbdg");b.textContent=n;b.style.display=n?"inline-block":"none"}
+const onC=()=>$("t-c").classList.contains("on");
+function stopLive(){unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];if(unsubMsg)unsubMsg();unsubMsg=null;liveOn=false;CH=[];TR={};MSGS=[];curChat=null;badge()}
+function startLive(){
+  if(liveOn)return;liveOn=true;const er=e=>console.warn(e.message);
+  unsubs.push(ref.onSnapshot(snap=>{
+    if(!snap.exists||snap.metadata.hasPendingWrites||!S)return;const d=snap.data();
+    if(d.t&&d.t!==S.t&&d.t>(S.t||0)){const dl=(d.bal||0)-S.bal,gi=(d.inv||[]).length-S.inv.length;S=norm(d);
+      if(dl||gi>0)toast("🎁 Профиль обновлён"+(dl?": "+(dl>0?"+":"")+dl+" ⭐":"")+(gi>0?", новый подарок":""),"ok");
+      if(!busy)render()}},er));
+  unsubs.push(db.collection("chats").where("users","array-contains",uid).onSnapshot(s=>{CH=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.lt||0)-(a.lt||0));if(onC()&&!curChat)drawChats()},er));
+  let f1=true;
+  unsubs.push(db.collection("trades").where("to","==",uid).onSnapshot(s=>{
+    s.docChanges().forEach(c=>{const d={id:c.doc.id,...c.doc.data()};TR[d.id]=d;if(!f1&&c.type==="added"&&d.status==="pending")toast("🎁 "+d.fromNick+" предлагает сделку: "+d.price+" ⭐","ok")});
+    f1=false;badge();if(onC())showChats()},er));
+  unsubs.push(db.collection("trades").where("from","==",uid).onSnapshot(s=>{
+    s.docChanges().forEach(c=>{TR[c.doc.id]={id:c.doc.id,...c.doc.data()}});settleAll();if(onC())showChats()},er));
+}
+function settleAll(){Object.values(TR).forEach(t=>{if(t.from===uid&&t.status!=="pending"&&!t.settled&&!settling.has(t.id))settle(t)})}
+async function settle(t0){
+  settling.add(t0.id);const tr=db.collection("trades").doc(t0.id);let ok=false,t=t0;
+  try{
+    await db.runTransaction(async tx=>{ok=false;const s=await tx.get(tr);const d=s.data();if(!d||d.settled||d.status==="pending")return;tx.update(tr,{settled:true});t=d;ok=true});
+    if(ok){
+      if(t.status==="accepted"){S.inv.push({uid:S.uid++,id:t.giftId,sn:t.sn,bd:t.bd});toast("✅ Сделка принята: "+ITEMS[t.giftId].n+" #"+t.sn+" теперь у тебя","ok")}
+      else{S.bal+=t.price;toast(t.status==="declined"?"Сделку отклонили — звёзды возвращены":"Предложение отменено — звёзды возвращены")}
+      save();if(!busy)render();bump()}
+  }catch(e){console.warn(e.message)}finally{settling.delete(t0.id)}
+}
+async function setTrade(id,from,to){const tr=db.collection("trades").doc(id);await db.runTransaction(async tx=>{const s=await tx.get(tr);if(!s.exists||s.data().status!==from)throw new Error("уже обработано");tx.update(tr,{status:to})})}
+async function tradeAct(id,act){
+  const t=TR[id];if(!t)return;
+  try{
+    if(act==="cancel"){await setTrade(id,"pending","cancelled");return}
+    if(act==="dec"){await setTrade(id,"pending","declined");toast("Сделка отклонена");return}
+    const g=S.inv.find(o=>o.uid===t.giftUid&&o.id===t.giftId&&o.sn===t.sn);
+    if(!g){await setTrade(id,"pending","declined");toast("У тебя больше нет этого подарка — сделка отклонена");return}
+    await setTrade(id,"pending","accepted");
+    S.inv=S.inv.filter(o=>o!==g);S.bal+=t.price;selA=selA.filter(x=>x!==g.uid);if(selB!=null&&ITEMS[selB].p<=sumA())selB=null;
+    save();render();bump();toast("Сделка принята: +"+t.price+" ⭐","ok");
+  }catch(e){toast("Не удалось: "+e.message)}
+}
+function openTrade(gu){
+  const p=ALL.find(x=>x.id===vid);if(!p||p.id===uid)return;const g=(p.inv||[]).find(o=>o.uid===gu);if(!g)return;
+  $("tbox").innerHTML=`<h2>Сделка</h2><div class="mrow">${cardI(g)}</div><div style="color:var(--mut);font-size:12px;margin-bottom:8px">Владелец: ${esc(p.nick)}</div><input id="tprice" type="number" min="1" placeholder="Цена в ⭐ (у тебя ${S.bal})"><div class="row"><button class="btn" id="tgo">Предложить</button><button class="btn r" id="tno">Отмена</button></div>`;
+  $("tmodal").classList.add("show");$("tno").onclick=()=>$("tmodal").classList.remove("show");$("tgo").onclick=()=>sendOffer(p,g)}
+async function sendOffer(p,g){
+  const price=Math.floor(+$("tprice").value);
+  if(!(price>=1)){toast("Введи цену");return}
+  if(price>S.bal){toast("Не хватает звёзд — у тебя "+S.bal+" ⭐");return}
+  $("tgo").disabled=true;S.bal-=price;render();let created=false;
+  try{
+    clearTimeout(st);S.t=Date.now();await ref.set(S);
+    const tref=db.collection("trades").doc();
+    await tref.set({from:uid,fromNick:S.nick,to:p.id,toNick:p.nick,giftUid:g.uid,giftId:g.id,sn:g.sn,bd:g.bd,price,status:"pending",settled:false,t:Date.now()});created=true;
+    const cr=db.collection("chats").doc(chatId(p.id));
+    await cr.set({users:[uid,p.id],names:{[uid]:S.nick,[p.id]:p.nick}},{merge:true});
+    await cr.collection("msgs").add({type:"trade",tradeId:tref.id,from:uid,text:"Предложение сделки: "+price+" ⭐",t:Date.now()});
+    await cr.update({last:"🎁 Предложение сделки "+price+" ⭐",lt:Date.now()});
+    $("tmodal").classList.remove("show");toast("Предложение отправлено","ok");
+  }catch(e){if(!created){S.bal+=price;save();render()}toast("Ошибка: "+e.message);$("tgo").disabled=false}
+}
+const pnm=id=>{const p=ALL.find(x=>x.id===id);return p?nm(p):esc(((CH.find(c=>c.users.includes(id))||{}).names||{})[id]||"Игрок")};
+function drawChats(){
+  const L=CH.filter(c=>c.last);
+  $("chats").innerHTML=L.length?L.map(c=>{const o=c.users.find(x=>x!==uid),n=pendIn().filter(t=>t.from===o).length,nn=(c.names||{})[o]||"?";return `<div class="crow" data-chat="${o}"><div class="av" style="width:42px;height:42px;font-size:18px;margin:0;flex:none;background:hsl(${hue(nn)} 60% 45%)">${esc(nn[0].toUpperCase())}</div><div style="flex:1;min-width:0"><b>${pnm(o)}</b><span>${esc(c.last)}</span></div>${n?`<div class="pc">🎁 ${n}</div>`:""}</div>`}).join(""):'<div class="empty">Чатов нет</div>'}
+$("cq").oninput=async()=>{const q=$("cq").value.trim().toLowerCase();if(!q){$("cfound").innerHTML="";return}if(!ALL.length)await loadAll();const a=ALL.filter(p=>p.id!==uid&&p.nick&&p.nl.includes(q)).slice(0,8);$("cfound").innerHTML=a.length?a.map(p=>`<div class="crow" data-chat="${p.id}"><b>${nm(p)}</b></div>`).join(""):'<div class="empty">Никого не нашли</div>'};
+function showChats(){$("clist").style.display=curChat?"none":"block";$("cview").style.display=curChat?"block":"none";if(curChat)drawView();else drawChats()}
+async function openChat(o){
+  if(!ALL.find(x=>x.id===o))await loadAll();const p=ALL.find(x=>x.id===o);if(!p||o===uid)return;
+  try{await db.collection("chats").doc(chatId(o)).set({users:[uid,o],names:{[uid]:S.nick,[o]:p.nick}},{merge:true})}catch(e){toast("Не удалось открыть чат");return}
+  if(unsubMsg)unsubMsg();MSGS=[];curChat={id:chatId(o),other:o};
+  unsubMsg=db.collection("chats").doc(curChat.id).collection("msgs").orderBy("t").limitToLast(100).onSnapshot(s=>{MSGS=s.docs.map(d=>({id:d.id,...d.data()}));if(curChat)drawView(true)},e=>console.warn(e.message));
+  show("c")}
+$("cback").onclick=()=>{if(unsubMsg)unsubMsg();unsubMsg=null;curChat=null;showChats()};
+function tradeCard(m){
+  const t=TR[m.tradeId];if(!t)return '<div class="trd">Сделка…</div>';
+  const mine=t.from===uid,head=mine?`Ты предлагаешь сделку <b>${t.price} ⭐</b>`:`${esc(t.fromNick)} предлагает вам сделку <b>${t.price} ⭐</b>`;
+  let foot="";
+  if(t.status==="pending")foot=mine?`<button class="btn r" data-tact="cancel" data-tid="${t.id}">Отменить</button>`:`<div class="row"><button class="btn u" data-tact="acc" data-tid="${t.id}">Принять</button><button class="btn r" data-tact="dec" data-tid="${t.id}">Отклонить</button></div>`;
+  else foot=`<div class="st">${t.status==="accepted"?"✅ Принято":t.status==="declined"?"❌ Отклонено":"🚫 Отменено"}</div>`;
+  return `<div class="trd"><div>${head}</div>${card(ITEMS[t.giftId],{sn:t.sn,bd:t.bd})}${foot}</div>`}
+function drawView(sc){
+  if(!curChat)return;$("cname").innerHTML=pnm(curChat.other);
+  const el=$("msgs"),atEnd=el.scrollTop+el.clientHeight>=el.scrollHeight-40;
+  el.innerHTML=MSGS.length?MSGS.map(m=>m.type==="trade"?tradeCard(m):`<div class="mg ${m.from===uid?"me":"o"}">${esc(m.text)}</div>`).join(""):'<div class="empty">Напиши первое сообщение</div>';
+  if(sc||atEnd)el.scrollTop=el.scrollHeight}
+async function sendMsg(){const txt=$("cmsg").value.trim().slice(0,300);if(!txt||!curChat)return;$("cmsg").value="";const cr=db.collection("chats").doc(curChat.id);
+  try{await cr.collection("msgs").add({type:"text",from:uid,text:txt,t:Date.now()});await cr.update({last:txt.slice(0,40),lt:Date.now()})}catch(e){toast("Не отправилось")}}
+$("csend").onclick=sendMsg;$("cmsg").onkeydown=e=>{if(e.key==="Enter")sendMsg()};
 </script>
 </body>
 </html>
