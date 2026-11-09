@@ -234,8 +234,12 @@ select{width:100%;padding:12px;border-radius:12px;border:1px solid #333a4d;backg
 /* ===== БЛОКИРОВКА / МУТ / ТЕХРАБОТЫ ===== */
 .bb{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:900;letter-spacing:1px;color:#000;-webkit-text-fill-color:#000;background:linear-gradient(135deg,#ff7a7a,#e01b1b,#ff7a7a);box-shadow:0 0 12px rgba(255,40,40,.75),inset 0 1px 0 #ffc0c0;vertical-align:middle;text-shadow:none}
 .pod.ban{border-color:#ff2e2e66}
-.bb,.pod .nm .bb{margin-left:5px;padding:2px 6px;font-size:9px;letter-spacing:.3px;white-space:nowrap;line-height:1.3;color:#000}
-.pod .nm b{white-space:nowrap}
+.pod .nm .bb{margin-left:4px;padding:2px 5px;font-size:8px;letter-spacing:.2px;white-space:nowrap;line-height:1.3;color:#000}
+.frm{position:absolute;top:4px;right:4px;z-index:3;display:flex;align-items:center;gap:3px;max-width:calc(100% - 8px);padding:2px 6px 2px 2px;border-radius:12px;background:#0b0d14c8;font-size:9px;line-height:1;pointer-events:none}
+.frm .fa{flex:none;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:#fff}
+.frm .fn{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800;color:#e8eaf2}
+.frm .nk{font-size:9px;animation:vflow 2s linear infinite}
+.chn{text-align:left;margin:12px 0}.chn input{margin-bottom:8px}
 .banbox{margin:12px 0;padding:14px;border-radius:22px;border:1.5px solid #ff2e2e;background:linear-gradient(rgba(255,30,30,.08),rgba(255,30,30,.08)),#06070b;text-align:center;box-shadow:0 0 22px rgba(255,40,40,.22)}
 .banbox b{display:block;color:#ff4d4d;font-size:18px;font-weight:900;letter-spacing:1px;margin-bottom:4px}
 .banbox span{color:#d9a3a3;font-size:14px;font-weight:400;word-break:break-word}
@@ -325,7 +329,9 @@ const CASE=100,SUMW=ITEMS.reduce((s,x)=>s+x.w,0),pc=x=>(x.w/SUMW*100).toFixed(2)
 let db,uid,ref,S=null,ALL=[],busy=false,selA=[],selB=null,M=1,vid=null;
 const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}};
 const inst=(it)=>({id:it.id,sn:1+rnd(9999),bd:rnd(8)});
-const card=(it,ins,cls="",at="",ex="")=>{ins=ins||{bd:it.id%8};const b=BD[ins.bd];const img=it.img?`<img src="${it.img}" alt="${it.n}" decoding="async" onerror="this.onerror=null;this.style.display='none';this.parentElement.innerHTML='<span style=&quot;font-size:32px&quot;>${it.e}</span>'">`:`<span style="font-size:36px">${it.e}</span>`;return `<div ${at} class="sk ${cls}" style="--c:${it.c};--b1:${b[0]};--b2:${b[1]}"><div class="gf">${it.img?"":`<div class="pat">${it.s.repeat(22)}</div>`}<div class="em">${img}</div></div><b>${it.n}</b><i>${it.p} ⭐</i>${ins.sn?`<small>#${ins.sn}</small>`:""}${ex}</div>`};
+const esc0=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const frm=ins=>{if(!ins||!ins.fn)return"";const n=esc0(ins.fn),ok=NS.some(x=>x.id===ins.fs);return `<div class="frm"><span class="fa" style="background:hsl(${hue(ins.fn)} 60% 45%)">${esc0(ins.fn[0].toUpperCase())}</span><span class="fn">${ok?`<span class="nk ${ins.fs}">${n}</span>`:n}</span></div>`};
+const card=(it,ins,cls="",at="",ex="")=>{ins=ins||{bd:it.id%8};const b=BD[ins.bd];const img=it.img?`<img src="${it.img}" alt="${it.n}" decoding="async" onerror="this.onerror=null;this.style.display='none';this.parentElement.innerHTML='<span style=&quot;font-size:32px&quot;>${it.e}</span>'">`:`<span style="font-size:36px">${it.e}</span>`;return `<div ${at} class="sk ${cls}" style="--c:${it.c};--b1:${b[0]};--b2:${b[1]}"><div class="gf">${it.img?"":`<div class="pat">${it.s.repeat(22)}</div>`}<div class="em">${img}</div>${frm(ins)}</div><b>${it.n}</b><i>${it.p} ⭐</i>${ins.sn?`<small>#${ins.sn}</small>`:""}${ex}</div>`};
 const cardI=(o,cls,at,ex)=>card(ITEMS[o.id],o,cls,at,ex);
 const total=p=>(p.bal||0)+(p.inv||[]).reduce((s,o)=>s+ITEMS[o.id].p,0);
 const gifts=p=>(p.inv||[]).reduce((s,o)=>s+ITEMS[o.id].p,0);
