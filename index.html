@@ -269,6 +269,14 @@ select{width:100%;padding:12px;border-radius:12px;border:1px solid #333a4d;backg
 .lg{max-height:60vh;overflow-y:auto;font-size:12px;background:var(--card);border-radius:12px;padding:4px 10px}
 .ll{padding:6px 0;border-bottom:1px solid #262a38;word-break:break-word;line-height:1.35}
 .ll:last-child{border:0}.ll span{color:var(--mut);margin-right:6px;white-space:nowrap}
+.case{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid #262a38;border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer;transition:transform .35s var(--spring),box-shadow .3s}
+.case:hover{transform:translateY(-2px)}.case:active{transform:scale(.97)}
+.case .cico{font-size:38px}.case .cinfo{flex:1;min-width:0}.case .cinfo b{display:block;font-size:16px}.case .cinfo span{font-size:12px;color:var(--mut)}
+.case .cprice{color:var(--gold);font-weight:900;white-space:nowrap}
+.case.c0{border-color:#35e07a66}.case.c2{border-color:#ffc83d88;box-shadow:0 0 20px #ffc83d33}.case.c3{border-color:#c84bff88;box-shadow:0 0 20px #c84bff33}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{padding:8px 12px;border-radius:20px;border:1px solid #333a4d;background:var(--card);color:var(--mut);font-weight:700;font-size:12px}
+.chip.on{background:#3a1d28;border-color:#ff7a90;color:#ff7a90}
 </style>
 </head>
 <body>
@@ -277,12 +285,14 @@ select{width:100%;padding:12px;border-radius:12px;border:1px solid #333a4d;backg
 <nav><button data-t="r" class="on">Рулетка</button><button data-t="u">Апгрейд</button><button data-t="t">Топ</button><button data-t="f">Поиск</button><button data-t="c">Чаты<span class="bdg" id="cbdg"></span></button><button data-t="p">Профиль</button></nav>
 <main>
 <section class="tab on" id="t-r">
+  <div id="rcases"></div>
+  <div id="rview" style="display:none"><button class="back" id="rback">← К кейсам</button><div class="cname" id="rtitle"></div>
   <div class="strip-w"><div class="mark"></div><div class="fade l"></div><div class="fade r"></div><div class="strip" id="strip"></div></div>
   <div class="strip-w x hide"><div class="mark"></div><div class="fade l"></div><div class="fade r"></div><div class="strip" id="strip1"></div></div>
   <div class="strip-w x hide"><div class="mark"></div><div class="fade l"></div><div class="fade r"></div><div class="strip" id="strip2"></div></div>
   <div class="res" id="rres">Открой кейс и выбей NFT-подарок</div>
   <div style="display:flex;gap:8px"><button class="btn mult" id="mult">x1</button><button class="btn g" id="openBtn">Открыть кейс — 100 ⭐</button></div>
-  <div class="h2">Что внутри</div><div class="grid" id="catalog"></div>
+  <div class="h2">Что внутри</div><div class="grid" id="catalog"></div></div>
 </section>
 <section class="tab" id="t-u">
   <div class="pair"><div id="slotA"></div><div style="font-size:24px">➜</div><div id="slotB"></div></div>
@@ -336,9 +346,24 @@ const IMG={
 "Heart Locket":"https://nft.fragment.com/gift/heartlocket-416.webp",
 "Precious Peach":"https://nft.fragment.com/gift/preciouspeach-10.webp",
 "Durov's Cap":"https://nft.fragment.com/gift/durovscap-1.webp",
-"Plush Pepe":"https://nft.fragment.com/gift/plushpepe-1.webp"
+"Plush Pepe":"https://nft.fragment.com/gift/plushpepe-1.webp",
+"Vintage Cigar":"https://nft.fragment.com/gift/vintagecigar-1.webp",
+"Perfume Bottle":"https://nft.fragment.com/gift/perfumebottle-1.webp",
+"Magic Potion":"https://nft.fragment.com/gift/magicpotion-1.webp",
+"Sharp Tongue":"https://nft.fragment.com/gift/sharptongue-1.webp",
+"Homemade Cake":"https://nft.fragment.com/gift/homemadecake-1.webp",
+"Signet Ring":"https://nft.fragment.com/gift/signetring-1.webp",
+"Eternal Rose":"https://nft.fragment.com/gift/eternalrose-1.webp",
+"Loot Bag":"https://nft.fragment.com/gift/lootbag-1.webp",
+"Bonded Ring":"https://nft.fragment.com/gift/bondedring-1.webp",
+"Gem Signet":"https://nft.fragment.com/gift/gemsignet-1.webp",
+"Crystal Ball":"https://nft.fragment.com/gift/crystalball-1.webp",
+"Neko Helmet":"https://nft.fragment.com/gift/nekohelmet-1.webp",
+"Sakura Flower":"https://nft.fragment.com/gift/sakuraflower-1.webp",
+"Diamond Ring":"https://nft.fragment.com/gift/diamondring-1.webp",
+"Ginger Cookie":"https://nft.fragment.com/gift/gingercookie-1.webp"
 };
-const ITEMS=[["Spiced Wine","🍷","🌶️",25],["Hex Pot","🍲","✨",40],["Spy Agaric","🍄","🔴",60],["Evil Eye","🧿","👁️",90],["Scared Cat","🙀","🐾",130],["Jelly Bunny","🐰","🍬",180],["Skull Flower","💀","🌸",260],["Kissed Frog","🐸","💋",380],["Toy Bear","🧸","⭐",600],["Swiss Watch","⌚","💎",950],["Heart Locket","💝","💗",1500],["Precious Peach","🍑","🌿",2600],["Durov's Cap","🧢","✈️",20000],["Plush Pepe","🐸","👑",60000]].map((a,i)=>({id:i,n:a[0],e:a[1],s:a[2],p:a[3],img:IMG[a[0]],c:col(a[3]),w:Math.pow(a[3],-1.2)*(a[3]>=20000?4:1)}));
+const ITEMS=[["Spiced Wine","🍷","🌶️",25],["Hex Pot","🍲","✨",40],["Spy Agaric","🍄","🔴",60],["Evil Eye","🧿","👁️",90],["Scared Cat","🙀","🐾",130],["Jelly Bunny","🐰","🍬",180],["Skull Flower","💀","🌸",260],["Kissed Frog","🐸","💋",380],["Toy Bear","🧸","⭐",600],["Swiss Watch","⌚","💎",950],["Heart Locket","💝","💗",1500],["Precious Peach","🍑","🌿",2600],["Durov's Cap","🧢","✈️",20000],["Plush Pepe","🐸","👑",60000],["Vintage Cigar","🚬","🔥",3000],["Perfume Bottle","🧴","🌸",3400],["Magic Potion","🧪","✨",3900],["Sharp Tongue","👅","💥",4400],["Homemade Cake","🍰","🍓",5000],["Signet Ring","💍","🔷",5700],["Eternal Rose","🌹","🥀",6500],["Loot Bag","🎒","🪙",7500],["Bonded Ring","💞","💍",8700],["Gem Signet","💠","💎",10000],["Crystal Ball","🔮","🌙",11500],["Neko Helmet","🐱","⛑️",12500],["Sakura Flower","🌸","🌺",13500],["Diamond Ring","💎","💍",15000],["Ginger Cookie","🍪","🎄",2000]].map((a,i)=>({id:i,n:a[0],e:a[1],s:a[2],p:a[3],img:IMG[a[0]],c:col(a[3]),w:Math.pow(a[3],-1.2)*(a[3]>=20000?4:1)}));
 Object.values(IMG).forEach(u=>{const i=new Image();i.src=u});
 const VIPP=3000;
 const CASE=100,SUMW=ITEMS.reduce((s,x)=>s+x.w,0),pc=x=>(x.w/SUMW*100).toFixed(2)+"%",rnd=n=>Math.floor(Math.random()*n);
@@ -456,10 +481,10 @@ function chance(){if(selB==null||(!selA.length&&!upStars))return 0;const f=sumA(
 const sumA=()=>selA.reduce((s,u)=>{const o=S.inv.find(o=>o.uid===u);return s+(o?ITEMS[o.id].p:0)},0);
 function render(){
   if(!S)return;animBal();if(upStars>S.bal)upStars=S.bal;{const ui=$("ustars");ui.placeholder="Добавить звёзды (у тебя "+S.bal+" ⭐)";if(document.activeElement!==ui)ui.value=upStars||""}
-  $("catalog").innerHTML=ITEMS.map(x=>card(x,null,"","",`<small>${pc(x)}</small>`)).join("");
+  drawCatalog();
   $("me").innerHTML=prof(S,true,'<button class="btn g" data-shop="1" style="margin:0 0 10px">🛍 Магазин</button>')+ownerPanel(S);
   $("myList").innerHTML=S.inv.length?S.inv.slice().reverse().map(o=>cardI(o,selA.includes(o.uid)?"sel":"",`data-a="${o.uid}"`)).join(""):'<div class="empty" style="grid-column:1/-1">Нет подарков — открой кейс</div>';
-  $("targets").innerHTML=ITEMS.filter(x=>x.p>sumA()+upStars).map(x=>card(x,null,selB===x.id?"sel":"",`data-b="${x.id}"`)).join("");
+  $("targets").innerHTML=ISORT().filter(x=>x.p>sumA()+upStars).map(x=>card(x,null,selB===x.id?"sel":"",`data-b="${x.id}"`)).join("");
   $("slotA").innerHTML=(selA.length>1||upStars)?`<div class="slot" style="flex-direction:column;color:#fff;gap:4px">${selA.length?`<b>${selA.length} подарк.</b>`:""}${upStars?`<b>+${upStars} ⭐</b>`:""}<i style="color:#ffc83d;font-style:normal;font-weight:800">${sumA()+upStars} ⭐</i></div>`:selA.length?cardI(S.inv.find(o=>o.uid===selA[0])):'<div class="slot">Твои подарки</div>';
   $("slotB").innerHTML=selB!=null?card(ITEMS[selB]):'<div class="slot">Цель</div>';
   const ch=chance();$("chance").textContent=ch?ch.toFixed(1)+"%":"—";$("win").setAttribute("stroke-dasharray",(ch?502.65*ch/100:0)+" 600");$("upBtn").disabled=!ch||busy;
@@ -472,6 +497,9 @@ function sell(u){const i=S.inv.findIndex(o=>o.uid==u);if(i<0)return;S.bal+=ITEMS
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-logs]")&&isOwner()){openLogs();return}
   if(e.target.closest("[data-shop]")&&!busy&&S){openShop();return}
+  const cs=e.target.closest("[data-case]");if(cs&&!busy&&S){openCase(+cs.dataset.case);return}
+  const lc=e.target.closest("[data-lc]");if(lc&&isOwner()){const k=lc.dataset.lc;lcSel.has(k)?lcSel.delete(k):lcSel.add(k);drawLogs();return}
+  if(e.target.closest("[data-lcall]")&&isOwner()){LCATS.forEach(c=>lcSel.add(c[0]));drawLogs();return}
   const cr=e.target.closest("[data-chat]");if(cr&&!busy){openChat(cr.dataset.chat);return}
   const ta=e.target.closest("[data-tact]");if(ta&&!busy){tradeAct(ta.dataset.tid,ta.dataset.tact);return}
   const gf=e.target.closest("[data-gift]");if(gf&&!busy){openGiftAct(+gf.dataset.gift);return}
@@ -496,28 +524,64 @@ document.addEventListener("click",e=>{
 });
 // ---- рулетка ----
 const STEP=140,strips=[$("strip"),$("strip1"),$("strip2")];
-function setM(){document.querySelectorAll(".strip-w.x").forEach((e,i)=>e.classList.toggle("hide",i+2>M));$("mult").textContent="x"+M;$("openBtn").textContent=`Открыть кейс — ${CASE*M} ⭐`}
-function fillN(s,win){s.className="strip";s.style.transition="none";s.style.transform="translateX(0)";s.innerHTML=Array.from({length:60},(_,i)=>i===50?card(win.it,win.ins,"won"):card(pick(),{bd:rnd(8),sn:1+rnd(9999)})).join("")}
-strips.forEach(s=>fillN(s,{it:pick(),ins:{bd:0,sn:1}}));setM();
-$("mult").onclick=()=>{if(!busy){M=M%3+1;setM()}};
+const LOT_P=0.35; // шанс подарка в «Лотерее» (иначе — пусто)
+const CASES=[
+ {id:0,n:"Бесплатный кейс",cost:0,ico:"🎁",d:"Подарки до 600 ⭐ · раз в 2 минуты",f:x=>x.p<=600},
+ {id:1,n:"Обычный кейс",cost:100,ico:"📦",d:"Все подарки",f:x=>true},
+ {id:2,n:"Золотой кейс",cost:500,ico:"💎",d:"Только подарки от 100 ⭐",f:x=>x.p>=100},
+ {id:3,n:"Лотерея",cost:1000,ico:"🎰",d:"Ginger Cookie за 2000 ⭐ или пусто",lot:true}
+];
+let CK=null;
+const ISORT=()=>ITEMS.slice().sort((a,b)=>a.p-b.p);
+const cpool=c=>c.lot?[ITEMS.find(x=>x.p===2000)]:ITEMS.filter(c.f);
+function pickC(c){
+  if(c.lot)return Math.random()<LOT_P?cpool(c)[0]:null;
+  const P=cpool(c),T=P.reduce((s,x)=>s+x.w,0);let r=Math.random()*T;for(const x of P){r-=x.w;if(r<=0)return x}return P[P.length-1]}
+const emptyCard=(cls="",ex="")=>`<div class="sk ${cls}" style="--c:#6b7280;--b1:#2a3040;--b2:#10131d"><div class="gf"><div class="em" style="font-size:38px">💨</div></div><b>Пусто</b><i>0 ⭐</i>${ex}</div>`;
+const pct=v=>v<0.01?"<0.01%":v.toFixed(2)+"%";
+function drawCases(){$("rcases").innerHTML=CASES.map(c=>`<div class="case c${c.id}" data-case="${c.id}"><div class="cico">${c.ico}</div><div class="cinfo"><b>${c.n}</b><span>${c.d}</span></div><div class="cprice">${c.cost?c.cost+" ⭐":"Бесплатно"}</div></div>`).join("")}
+function drawCatalog(){
+  const g=$("catalog");if(!CK){g.innerHTML="";return}
+  if(CK.lot){g.innerHTML=card(cpool(CK)[0],null,"","",`<small>${(LOT_P*100).toFixed(0)}%</small>`)+emptyCard("",`<small>${((1-LOT_P)*100).toFixed(0)}%</small>`);return}
+  const P=ISORT().filter(CK.f),T=P.reduce((s,x)=>s+x.w,0);
+  g.innerHTML=P.map(x=>card(x,null,"","",`<small>${pct(x.w/T*100)}</small>`)).join("")}
+const cdLeft=()=>Math.max(0,120000-(Date.now()-((S&&S.fc)||0)));
+const fmtCd=ms=>{const t=Math.ceil(ms/1000);return Math.floor(t/60)+":"+String(t%60).padStart(2,"0")};
+const openLabel=()=>{const c=CK?CK.cost*M:0;return c?`Открыть кейс — ${c} ⭐`:"Открыть бесплатно"};
+function btnState(){const b=$("openBtn");if(busy)return;const w=(CK&&CK.cost===0)?cdLeft():0;b.disabled=w>0;b.textContent=w>0?"⏳ "+fmtCd(w):openLabel()}
+function setM(){document.querySelectorAll(".strip-w.x").forEach((e,i)=>e.classList.toggle("hide",i+2>M));$("mult").textContent="x"+M;btnState()}
+function fillN(s,win){s.className="strip";s.style.transition="none";s.style.transform="translateX(0)";const c=CK||CASES[1];
+  s.innerHTML=Array.from({length:60},(_,i)=>{if(i===50)return win.it?card(win.it,win.ins,"won"):emptyCard("won");const x=pickC(c);return x?card(x,{bd:rnd(8),sn:1+rnd(9999)}):emptyCard()}).join("")}
+strips.forEach(s=>fillN(s,{it:pickC(CASES[1]),ins:{bd:0,sn:1}}));setM();drawCases();
+function openCase(id){
+  CK=CASES[id];M=1;$("mult").style.display=CK.cost===0?"none":"";$("rcases").style.display="none";$("rview").style.display="block";
+  $("rtitle").textContent=CK.ico+" "+CK.n;
+  strips.forEach(s=>fillN(s,{it:pickC(CK),ins:{bd:0,sn:1}}));
+  $("rres").textContent="Открой кейс и выбей NFT-подарок";setM();drawCatalog()}
+$("rback").onclick=()=>{if(busy)return;CK=null;$("rview").style.display="none";$("rcases").style.display="block"};
+$("mult").onclick=()=>{if(!busy&&CK&&CK.cost>0){M=M%3+1;setM()}};
+setInterval(()=>{if(CK&&CK.cost===0&&!busy&&S)btnState()},1000);
 $("openBtn").onclick=()=>{
-  if(busy||!S)return;const cost=CASE*M;
+  if(busy||!S||!CK)return;if(CK.cost===0&&cdLeft()>0)return;const cost=CK.cost*M;
   if(S.bal<cost){toast("Не хватает звёзд!");return}
-  busy=true;$("openBtn").disabled=true;S.bal-=cost;animBal();
+  busy=true;$("openBtn").disabled=true;S.bal-=cost;animBal();if(CK.cost===0){S.fc=Date.now();save()}
   const wins=[];
-  for(let k=0;k<M;k++){const it=pick(),ins=inst(it),w={it,ins};wins.push(w);const s=strips[k];fillN(s,w);const W=s.parentElement.clientWidth,off=50*STEP+66-W/2+(Math.random()*90-45);void s.offsetWidth;s.style.transition=`transform ${6.5+k*.6}s cubic-bezier(.06,.7,.1,1)`;s.style.transform=`translateX(${-off}px)`}
+  for(let k=0;k<M;k++){const it=pickC(CK),ins=it?inst(it):null,w={it,ins};wins.push(w);const s=strips[k];fillN(s,w);const W=s.parentElement.clientWidth,off=50*STEP+66-W/2+(Math.random()*90-45);void s.offsetWidth;s.style.transition=`transform ${6.5+k*.6}s cubic-bezier(.06,.7,.1,1)`;s.style.transform=`translateX(${-off}px)`}
   $("rres").textContent="Крутим...";
   setTimeout(()=>{try{
     strips.slice(0,M).forEach(s=>s.classList.add("done"));
-    const uids=wins.map(w=>{const o={uid:S.uid++,...w.ins};S.inv.push(o);return o.uid});save();logE("drop","🎰 Рулетка: "+S.nick+" выбил "+wins.map(w=>w.it.n+" #"+w.ins.sn).join(", "));
-    const tot=wins.reduce((s,w)=>s+w.it.p,0);
-    $("rres").innerHTML=wins.map(w=>`<span style="color:${w.it.c}">${w.it.n}</span>`).join(", ");
+    const got=wins.filter(w=>w.it);
+    const uids=got.map(w=>{const o={uid:S.uid++,...w.ins};S.inv.push(o);return o.uid});save();
+    logE("roul","🎰 Рулетка («"+CK.n+"»): "+S.nick+(got.length?" выбил "+got.map(w=>w.it.n+" #"+w.ins.sn).join(", "):" — пусто"));
+    const tot=got.reduce((s,w)=>s+w.it.p,0);
+    $("rres").innerHTML=wins.map(w=>w.it?`<span style="color:${w.it.c}">${w.it.n}</span>`:'<span style="color:#9aa4b5">Пусто</span>').join(", ");
     const m=$("mbox");m.style.width=M>1?"min(540px,100%)":"";
-    m.innerHTML=`<h2>ВЫПАЛО!</h2><div class="mrow">${wins.map(w=>card(w.it,w.ins)).join("")}</div><div class="row"><button class="btn" id="keep">Оставить</button><button class="btn g" id="msell">Продать ${tot} ⭐</button></div>`;
-    $("modal").classList.add("show");burst(m,[wins[0].it.c,"#fff",wins[M-1].it.c,"#ffc83d"],50+M*10);
-    $("keep").onclick=close;$("msell").onclick=()=>{uids.forEach(u=>sell(u));close()};
-    function close(){$("modal").classList.remove("show");busy=false;$("openBtn").disabled=false;render()}
-  }catch(e){busy=false;$("openBtn").disabled=false;$("rres").textContent="Ошибка: "+e.message;try{render()}catch(_){}}},6700+(M-1)*600);
+    const c0=(wins[0].it||{c:"#999"}).c,c1=(wins[M-1].it||{c:"#999"}).c;
+    m.innerHTML=`<h2>${got.length?"ВЫПАЛО!":"ПУСТО 😢"}</h2><div class="mrow">${wins.map(w=>w.it?card(w.it,w.ins):emptyCard()).join("")}</div><div class="row">${got.length?`<button class="btn" id="keep">Оставить</button><button class="btn g" id="msell">Продать ${tot} ⭐</button>`:`<button class="btn" id="keep">Ок</button>`}</div>`;
+    $("modal").classList.add("show");burst(m,[c0,"#fff",c1,"#ffc83d"],50+M*10);
+    $("keep").onclick=close;if($("msell"))$("msell").onclick=()=>{uids.forEach(u=>sell(u));close()};
+    function close(){$("modal").classList.remove("show");busy=false;btnState();render()}
+  }catch(e){busy=false;btnState();$("rres").textContent="Ошибка: "+e.message;try{render()}catch(_){}}},6700+(M-1)*600);
 };
 // ---- апгрейд ----
 $("ustars").oninput=()=>{if(busy||!S)return;let v=Math.floor(+$("ustars").value)||0;if(v<0)v=0;if(v>S.bal){v=S.bal;$("ustars").value=v||""}upStars=v;if(selB!=null&&ITEMS[selB].p<=sumA()+upStars)selB=null;render()};
@@ -529,8 +593,8 @@ $("upBtn").onclick=()=>{
   const froms=selA.map(u=>S.inv.find(o=>o.uid===u)),to=ITEMS[selB],wb=$("wb"),used=selA.slice(),stake=froms.map(f=>ITEMS[f.id].n+" #"+f.sn).concat(stars?[stars+" ⭐"]:[]).join(", ");
   setTimeout(()=>{
     const ov=$("ov");S.inv=S.inv.filter(o=>!used.includes(o.uid));
-    if(win){const o={uid:S.uid++,...inst(to)};S.inv.push(o);logE("drop","⬆️ Апгрейд: "+S.nick+" "+stake+" → "+to.n+" #"+o.sn+" — ВЫИГРАЛ (шанс "+ch.toFixed(1)+"%)");ov.className="ov show win";ov.innerHTML=`<h3>ПОБЕДА!</h3>${cardI(o)}`;wb.classList.add("flash");burst(wb,["#35e07a","#fff",to.c,"#ffc83d"],60)}
-    else{logE("drop","⬇️ Апгрейд: "+S.nick+" "+stake+" → "+to.n+" — проиграл (шанс "+ch.toFixed(1)+"%)");ov.className="ov show lose";ov.innerHTML=`<h3>ПРОИГРЫШ</h3>${froms.length>1?'<div class="lrow">'+froms.slice(0,3).map(f=>cardI(f)).join("")+'</div>':froms.length?cardI(froms[0]):'<div style="font-size:48px">⭐</div><b>'+stars+' ⭐</b>'}`;wb.classList.add("shake");burst(wb,["#ff4d6d","#555","#999"],24)}
+    if(win){const o={uid:S.uid++,...inst(to)};S.inv.push(o);logE("upg","⬆️ Апгрейд: "+S.nick+" "+stake+" → "+to.n+" #"+o.sn+" — ВЫИГРАЛ (шанс "+ch.toFixed(1)+"%)");ov.className="ov show win";ov.innerHTML=`<h3>ПОБЕДА!</h3>${cardI(o)}`;wb.classList.add("flash");burst(wb,["#35e07a","#fff",to.c,"#ffc83d"],60)}
+    else{logE("upg","⬇️ Апгрейд: "+S.nick+" "+stake+" → "+to.n+" — проиграл (шанс "+ch.toFixed(1)+"%)");ov.className="ov show lose";ov.innerHTML=`<h3>ПРОИГРЫШ</h3>${froms.length>1?'<div class="lrow">'+froms.slice(0,3).map(f=>cardI(f)).join("")+'</div>':froms.length?cardI(froms[0]):'<div style="font-size:48px">⭐</div><b>'+stars+' ⭐</b>'}`;wb.classList.add("shake");burst(wb,["#ff4d6d","#555","#999"],24)}
     save();animBal();
     setTimeout(()=>{ov.className="ov";wb.classList.remove("flash","shake");busy=false;selA=[];selB=null;render()},2800);
   },7700);
@@ -573,7 +637,7 @@ function toast(msg,type){let t=$("toast");if(!t){t=document.createElement("div")
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const isOwner=()=>!!S&&(S.owner===true||S.ovner===true);
 const ovHead=p=>`<button class="btn" data-chat="${p.id}" style="margin:6px 0 10px">💬 Написать</button><button class="btn g" data-sendgift="1" style="margin:0 0 10px">🎁 Подарить подарок</button><div style="color:var(--mut);font-size:12px;text-align:center;margin-bottom:6px">Нажми на подарок, чтобы предложить сделку</div>`;
-const ownerPanel=p=>isOwner()?`<div class="vipbox" style="text-align:left"><b>🛠 Панель владельца</b><span>Игрок: ${nm(p)}</span><input class="ost" type="number" placeholder="Звёзды (минус — списать)"><button class="btn g" data-ost="1" data-ot="${p.id||uid}">Выдать звёзды</button><select class="ogid">${ITEMS.map(x=>`<option value="${x.id}">${x.n} — ${x.p} ⭐</option>`).join("")}</select><input class="ogsn" type="number" min="1" placeholder="Номер # (пусто — случайный)"><button class="btn u" data-ogf="1" data-ot="${p.id||uid}">Выдать подарок</button><button class="btn g" data-ovip="1" data-ot="${p.id||uid}">👑 Выдать VIP</button><button class="btn r" data-ovip="0" data-ot="${p.id||uid}">Забрать VIP</button>${modPanel(p)}</div>`:"";
+const ownerPanel=p=>isOwner()?`<div class="vipbox" style="text-align:left"><b>🛠 Панель владельца</b><span>Игрок: ${nm(p)}</span><input class="ost" type="number" placeholder="Звёзды (минус — списать)"><button class="btn g" data-ost="1" data-ot="${p.id||uid}">Выдать звёзды</button><select class="ogid">${ISORT().map(x=>`<option value="${x.id}">${x.n} — ${x.p} ⭐</option>`).join("")}</select><input class="ogsn" type="number" min="1" placeholder="Номер # (пусто — случайный)"><button class="btn u" data-ogf="1" data-ot="${p.id||uid}">Выдать подарок</button><button class="btn g" data-ovip="1" data-ot="${p.id||uid}">👑 Выдать VIP</button><button class="btn r" data-ovip="0" data-ot="${p.id||uid}">Забрать VIP</button>${modPanel(p)}</div>`:"";
 async function ownerGive(tid,stars,gid,sn,ex){
   const r=db.collection("players").doc(tid);
   try{
@@ -755,7 +819,7 @@ const trLog=(t,st)=>{const g=ITEMS[t.giftId];if(g)logE("trade",(st==="accepted"?
 let ssel=null;
 function openShop(){
   ssel=null;const b=$("tbox");b.style.width="min(440px,100%)";
-  b.innerHTML=`<h2>🛍 Магазин</h2><div style="color:var(--mut);font-size:12px;margin-bottom:8px">У тебя ${S.bal} ⭐</div><div class="grid" style="max-height:52vh;overflow-y:auto;padding:4px">${ITEMS.map(x=>card(x,null,"",`data-sp="${x.id}"`)).join("")}</div><div class="row" style="margin-top:10px"><button class="btn g" id="sgo" disabled>Выбери подарок</button><button class="btn r" id="sno">Закрыть</button></div>`;
+  b.innerHTML=`<h2>🛍 Магазин</h2><div style="color:var(--mut);font-size:12px;margin-bottom:8px">У тебя ${S.bal} ⭐</div><div class="grid" style="max-height:52vh;overflow-y:auto;padding:4px">${ISORT().map(x=>card(x,null,"",`data-sp="${x.id}"`)).join("")}</div><div class="row" style="margin-top:10px"><button class="btn g" id="sgo" disabled>Выбери подарок</button><button class="btn r" id="sno">Закрыть</button></div>`;
   b.querySelectorAll("[data-sp]").forEach(t=>t.onclick=()=>{ssel=+t.dataset.sp;b.querySelectorAll("[data-sp]").forEach(k=>k.classList.toggle("sel",k===t));const g=$("sgo");g.disabled=false;g.textContent="Купить за "+ITEMS[ssel].p+" ⭐"});
   $("sno").onclick=()=>$("tmodal").classList.remove("show");$("sgo").onclick=buyShop;$("tmodal").classList.add("show")}
 function buyShop(){
@@ -769,15 +833,30 @@ async function openLogs(){
   const box=$("logbox");box.innerHTML='<div class="empty">Загрузка…</div>';
   try{const q=await db.collection("logs").orderBy("t","desc").limit(300).get();LOGS=q.docs.map(d=>d.data());drawLogs()}
   catch(e){box.innerHTML='<div class="empty">Ошибка: '+esc(e.message)+'<br>Проверь правила Firebase для logs</div>'}}
+const LCATS=[["msg","💬 Сообщения"],["gift","🎁 Подарки"],["trade","🤝 Сделки"],["roul","🎰 Рулетка"],["upg","⬆️ Апгрейд"],["shop","🛍 Магазин"]];
+let lcSel=new Set();
+const lty=l=>l.ty==="drop"?(String(l.txt||"").startsWith("🎰")?"roul":"upg"):l.ty;
 function drawLogs(){
-  const L=LOGS.filter(l=>logF==="all"||l.ty===logF);
-  $("logbox").innerHTML=`<div class="h2">Логи</div><select id="logf"><option value="all">Все</option><option value="msg">Сообщения</option><option value="gift">Подарки</option><option value="trade">Сделки</option><option value="drop">Рулетка и апгрейд</option><option value="shop">Магазин</option></select><button class="btn" data-logs="1" style="margin-bottom:8px">🔄 Обновить</button><div class="lg">${L.length?L.map(l=>`<div class="ll"><span>${fD(l.t)}</span>${esc(l.txt||"")}</div>`).join(""):'<div class="empty">Пусто</div>'}</div>`;
-  $("logf").value=logF;$("logf").onchange=()=>{logF=$("logf").value;drawLogs()}}
+  const L=LOGS.filter(l=>logF==="all"||lty(l)===logF);
+  $("logbox").innerHTML=`<div class="h2">Логи</div><select id="logf"><option value="all">Все</option>${LCATS.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join("")}</select><button class="btn" data-logs="1" style="margin-bottom:8px">🔄 Обновить</button><div class="lg">${L.length?L.map(l=>`<div class="ll"><span>${fD(l.t)}</span>${esc(l.txt||"")}</div>`).join(""):'<div class="empty">Пусто</div>'}</div><div class="h2">Очистить логи</div><div class="chips">${LCATS.map(c=>`<button class="chip${lcSel.has(c[0])?" on":""}" data-lc="${c[0]}">${c[1]}</button>`).join("")}<button class="chip" data-lcall="1">Выбрать все</button></div><button class="btn r" id="lclr">🗑 Очистить выбранные</button>`;
+  $("logf").value=logF;$("logf").onchange=()=>{logF=$("logf").value;drawLogs()};
+  $("lclr").onclick=()=>{const b=$("lclr");if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Точно очистить? Нажми ещё раз";setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;b.textContent="🗑 Очистить выбранные"}},3000);return}clearLogs()}}
+async function clearLogs(){
+  if(!isOwner())return;if(!lcSel.size){toast("Выбери, что очистить");return}
+  const b=$("lclr");b.disabled=true;let n=0;
+  const del=async docs=>{for(let i=0;i<docs.length;i+=400){const bt=db.batch(),part=docs.slice(i,i+400);part.forEach(d=>bt.delete(d.ref));await bt.commit();n+=part.length}};
+  try{
+    for(const cat of lcSel){
+      for(;;){const q=await db.collection("logs").where("ty","==",cat).limit(400).get();if(q.empty)break;await del(q.docs)}
+      if(cat==="roul"||cat==="upg"){const q=await db.collection("logs").where("ty","==","drop").get();await del(q.docs.filter(d=>lty(d.data())===cat))}
+    }
+    toast("Удалено записей: "+n,"ok");lcSel.clear();await openLogs()
+  }catch(e){toast("Ошибка: "+e.message);b.disabled=false}}
 let gsel=null;
 function openGift(){
   const p=ALL.find(x=>x.id===vid);if(!p||p.id===uid)return;gsel=null;
   const b=$("tbox");b.style.width="min(440px,100%)";
-  b.innerHTML=`<h2>Подарить подарок</h2><div style="color:var(--mut);font-size:12px;margin-bottom:8px">Получатель: ${esc(p.nick)} · у тебя ${S.bal} ⭐</div><div class="grid" style="max-height:52vh;overflow-y:auto;padding:4px">${ITEMS.map(x=>card(x,null,"",`data-gp="${x.id}"`)).join("")}</div><div class="row" style="margin-top:10px"><button class="btn g" id="ggo" disabled>Выбери подарок</button><button class="btn r" id="gno">Отмена</button></div>`;
+  b.innerHTML=`<h2>Подарить подарок</h2><div style="color:var(--mut);font-size:12px;margin-bottom:8px">Получатель: ${esc(p.nick)} · у тебя ${S.bal} ⭐</div><div class="grid" style="max-height:52vh;overflow-y:auto;padding:4px">${ISORT().map(x=>card(x,null,"",`data-gp="${x.id}"`)).join("")}</div><div class="row" style="margin-top:10px"><button class="btn g" id="ggo" disabled>Выбери подарок</button><button class="btn r" id="gno">Отмена</button></div>`;
   b.querySelectorAll("[data-gp]").forEach(t=>t.onclick=()=>{gsel=+t.dataset.gp;b.querySelectorAll("[data-gp]").forEach(k=>k.classList.toggle("sel",k===t));const g=$("ggo");g.disabled=false;g.textContent="Подарить за "+ITEMS[gsel].p+" ⭐"});
   $("gno").onclick=()=>$("tmodal").classList.remove("show");$("ggo").onclick=()=>sendGift(p);
   $("tmodal").classList.add("show")}
