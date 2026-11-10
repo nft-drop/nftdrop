@@ -390,8 +390,17 @@ const isOn=p=>!!(p&&p.online===true&&p.seen&&Date.now()-p.seen<400000);
 const nm=p=>{if(p.banned)return '<span class="nn">'+esc0(p.nick)+'</span><span class="bb">ЗАБЛОКИРОВАН</span>';const st=NS.find(x=>x.id===p.ns);const n=st?`<span class="nk ${st.id}">${p.nick}</span>`:p.vip?`<span class="vn">${p.nick}</span>`:p.nick;return '<span class="nn">'+n+'</span>'+(isOn(p)?'<span class="dot"></span>':'')+(p.vip?'<span class="vb">👑 VIP</span>':"")};
 const shop=p=>`<div class="h2">Стили ника</div><div class="nsgrid">${NS.map(st=>{const owned=(p.own||[]).includes(st.id),on=p.ns===st.id,lock=st.vip&&!p.vip;return `<div class="nsc${on?" on":""}${lock&&!owned?" lock":""}"><div class="nsp"><span class="nk ${st.id}">${p.nick}</span></div><small>${st.name}${st.vip?" · VIP":""}</small>${on?'<button class="btn" data-nsoff="1">Снять</button>':owned?`<button class="btn u" data-nsuse="${st.id}">Надеть</button>`:`<button class="btn g" data-nsbuy="${st.id}">${lock?"🔒 ":""}${st.p} ⭐</button>`}</div>`}).join("")}</div>`;
 const vipBox=()=>`<div class="vipbox"><div><b>👑 VIP-статус</b><span>Золотой переливающийся ник с короной у всех: в топе, поиске и профиле</span></div><button class="btn g" data-vip="1">Купить за ${VIPP} ⭐</button></div>`;
-const AVS=["🦊","🐼","🐯","🦁","🐸","🐵","🦄","🐙","🐲","🦉","🐺","🐱","🐶","🐧","🦋","🐳","👽","🤖","👻","💀","🎃","🔥","⚡","🌙"];
-const av=(n,v,a,x)=>{const e=Number.isInteger(a)&&AVS[a]?AVS[a]:"",c=`hsl(${hue(e||n)} 60% ${e?36:45}%)`;return `<div class="av${v?" vip":""}" style="--avc:${c};background:${c};${e?"font-size:32px;":""}${x||""}">${e||esc(n[0].toUpperCase())}</div>`};
+const AVP=[["#7f5af0","#2cb1ff"],["#ff5e7e","#ffb347"],["#11998e","#38ef7d"],["#fc466b","#3f5efb"],["#f7971e","#ffd200"],["#8e2de2","#4a00e0"],["#00c6ff","#0072ff"],["#f857a6","#ff5858"]];
+const AVT=['<circle cx="50" cy="50" r="22" fill="#fff" fill-opacity=".9"/><ellipse cx="50" cy="50" rx="40" ry="11" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="5" transform="rotate(-25 50 50)"/>',
+'<circle cx="68" cy="32" r="12" fill="#fff" fill-opacity=".9"/><path d="M0 100V70l28-30 24 26 18-16 30 30v20z" fill="#000" fill-opacity=".28"/><path d="M0 100V82l22-20 26 22 22-14 30 18v12z" fill="#fff" fill-opacity=".35"/>',
+'<path d="M0 38q25-18 50 0t50 0v14q-25 18-50 0t-50 0z" fill="#fff" fill-opacity=".85"/><path d="M0 62q25-18 50 0t50 0v14q-25 18-50 0t-50 0z" fill="#fff" fill-opacity=".4"/>',
+'<path d="M50 14l26 36-26 36-26-36z" fill="#fff" fill-opacity=".9"/><path d="M50 14l26 36H24z" fill="#000" fill-opacity=".15"/>',
+'<circle cx="50" cy="50" r="38" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="5"/><circle cx="50" cy="50" r="25" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="5"/><circle cx="50" cy="50" r="11" fill="#fff"/>',
+'<path d="M50 14q4 32 36 36-32 4-36 36-4-32-36-36 32-4 36-36z" fill="#fff" fill-opacity=".92"/><circle cx="78" cy="24" r="4" fill="#fff" fill-opacity=".8"/><circle cx="24" cy="76" r="3" fill="#fff" fill-opacity=".7"/>',
+'<path d="M62 20a32 32 0 1 0 18 54A26 26 0 0 1 62 20z" fill="#fff" fill-opacity=".92"/><circle cx="76" cy="30" r="3.5" fill="#fff"/><circle cx="86" cy="48" r="2.5" fill="#fff" fill-opacity=".8"/>',
+'<path d="M50 14l31 18v36L50 86 19 68V32z" fill="#fff" fill-opacity=".88"/><path d="M50 30l17 10v20L50 70 33 60V40z" fill="#000" fill-opacity=".22"/>'];
+const AVS=Array.from({length:24},(_,i)=>i);
+const av=(n,v,a,x)=>{const ok=Number.isInteger(a)&&a>=0&&a<AVS.length,c=ok?AVP[(a*5+(a>>3))%8]:null,bg=ok?`linear-gradient(135deg,${c[0]},${c[1]})`:`hsl(${hue(n)} 60% 45%)`;return `<div class="av${v?" vip":""}" style="--avc:${ok?c[0]:`hsl(${hue(n)} 60% 45%)`};background:${bg};${x||""}">${ok?`<svg viewBox="0 0 100 100" style="width:100%;height:100%;border-radius:50%"><rect width="100" height="100" fill="none"/>${AVT[a%8]}</svg>`:esc(n[0].toUpperCase())}</div>`};
 const avEdit=p=>`<div class="avw" data-avedit="1">${av(p.nick,p.vip&&!p.banned,p.avi)}<span class="avp"><svg viewBox="0 0 24 24" width="13" height="13" fill="#fff"><path d="M3 17.25V21h3.75L17.8 9.95l-3.75-3.75L3 17.25zM20.7 7.04a1 1 0 0 0 0-1.41l-2.33-2.33a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.82-1.84z"/></svg></span></div>`;
 function pick(){let r=Math.random()*SUMW;for(const x of ITEMS){r-=x.w;if(r<=0)return x}return ITEMS[0]}
 let st;const save=()=>{clearTimeout(st);st=setTimeout(()=>{if(!S)return;S.t=Date.now();ref.set(S,{merge:true}).catch(()=>{})},400)};
@@ -480,7 +489,7 @@ $("logout").onclick=()=>{if(busy)return;selA=[];selB=null;$("nick").value="";$("
 $("vback").onclick=()=>show("f");
 let allT=0;
 async function loadAll(force){if(!force&&ALL.length&&Date.now()-allT<120000)return ALL;try{allT=Date.now();const q=await db.collection("players").limit(300).get();ALL=q.docs.map(d=>({id:d.id,...d.data()}))}catch(e){}return ALL}
-const prow=(p,i)=>`<div class="pod ${i<3?"g"+(i+1):""}${p.vip&&!p.banned?" vip":""}${p.banned?" ban":""}" data-v="${p.id}"><div class="m">${["🥇","🥈","🥉"][i]||""}</div>${av(p.nick,p.vip&&!p.banned,p.avi,"width:42px;height:42px;font-size:"+(Number.isInteger(p.avi)?20:18)+"px;margin:0 2px;flex:none")}<div class="nm"><b>${nm(p)}</b><span>${p.id===uid?"это ты":"открыть профиль"}</span></div><div class="tt">${total(p)} ⭐<small>${p.bal} ⭐ + подарки ${gifts(p)}</small></div></div>`;
+const prow=(p,i)=>`<div class="pod ${i<3?"g"+(i+1):""}${p.vip&&!p.banned?" vip":""}${p.banned?" ban":""}" data-v="${p.id}"><div class="m">${["🥇","🥈","🥉"][i]||""}</div><div class="nm"><b>${nm(p)}</b><span>${p.id===uid?"это ты":"открыть профиль"}</span></div><div class="tt">${total(p)} ⭐<small>${p.bal} ⭐ + подарки ${gifts(p)}</small></div></div>`;
 async function loadTop(){$("top").innerHTML='<div class="empty">Загрузка…</div>';await loadAll();const a=ALL.filter(p=>p.nick).sort((x,y)=>total(y)-total(x)).slice(0,3);$("top").innerHTML=a.length?a.map(prow).join(""):'<div class="empty">Пока никого</div>'}
 const isPin=(p,u)=>(p.pins||[]).includes(u);
 const pinSort=p=>{const inv=(p.inv||[]),pins=(p.pins||[]).filter(u=>inv.some(o=>o.uid===u)).slice(0,4);return pins.map(u=>inv.find(o=>o.uid===u)).concat(inv.filter(o=>!pins.includes(o.uid)).reverse())};
@@ -534,6 +543,7 @@ document.addEventListener("click",e=>{
   const v=e.target.closest("[data-v]");if(v&&!busy){openV(v.dataset.v);return}
   const s=e.target.closest("[data-sell]");if(s&&!busy){sell(s.dataset.sell);return}
   const ae=e.target.closest("[data-avedit]");if(ae&&!busy){openAv();return}
+  const oav=e.target.closest("[data-oav]");if(oav&&!busy&&isOwner()){openAv(oav.dataset.oav);return}
   const pn=e.target.closest("[data-pin]");if(pn&&!busy){togglePin(pn.dataset.pin);return}
   const a=e.target.closest("[data-a]");if(a&&!busy){const u=+a.dataset.a,i=selA.indexOf(u);i<0?selA.push(u):selA.splice(i,1);if(selB!=null&&ITEMS[selB].p<=sumA()+upStars)selB=null;render();return}
   const b=e.target.closest("[data-b]");if(b&&!busy){selB=+b.dataset.b;render()}
@@ -653,7 +663,7 @@ function toast(msg,type){let t=$("toast");if(!t){t=document.createElement("div")
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const isOwner=()=>!!S&&(S.owner===true||S.ovner===true);
 const ovHead=p=>`<button class="btn" data-chat="${p.id}" style="margin:6px 0 10px">💬 Написать</button><button class="btn g" data-sendgift="1" style="margin:0 0 10px">🎁 Подарить подарок</button><div style="color:var(--mut);font-size:12px;text-align:center;margin-bottom:6px">Нажми на подарок, чтобы предложить сделку</div>`;
-const ownerPanel=p=>isOwner()?`<div class="vipbox" style="text-align:left"><b>🛠 Панель владельца</b><span>Игрок: ${nm(p)}</span><input class="ost" type="number" placeholder="Звёзды (минус — списать)"><button class="btn g" data-ost="1" data-ot="${p.id||uid}">Выдать звёзды</button><select class="ogid">${ISORT().map(x=>`<option value="${x.id}">${x.n} — ${x.p} ⭐</option>`).join("")}</select><input class="ogsn" type="number" min="1" placeholder="Номер # (пусто — случайный)"><button class="btn u" data-ogf="1" data-ot="${p.id||uid}">Выдать подарок</button><button class="btn g" data-ovip="1" data-ot="${p.id||uid}">👑 Выдать VIP</button><button class="btn r" data-ovip="0" data-ot="${p.id||uid}">Забрать VIP</button>${modPanel(p)}</div>`:"";
+const ownerPanel=p=>isOwner()?`<div class="vipbox" style="text-align:left"><b>🛠 Панель владельца</b><span>Игрок: ${nm(p)}</span><input class="ost" type="number" placeholder="Звёзды (минус — списать)"><button class="btn g" data-ost="1" data-ot="${p.id||uid}">Выдать звёзды</button><select class="ogid">${ISORT().map(x=>`<option value="${x.id}">${x.n} — ${x.p} ⭐</option>`).join("")}</select><input class="ogsn" type="number" min="1" placeholder="Номер # (пусто — случайный)"><button class="btn u" data-ogf="1" data-ot="${p.id||uid}">Выдать подарок</button><button class="btn g" data-ovip="1" data-ot="${p.id||uid}">👑 Выдать VIP</button><button class="btn r" data-ovip="0" data-ot="${p.id||uid}">Забрать VIP</button><button class="btn u" data-oav="${p.id||uid}">🖼 Сменить аватарку</button>${modPanel(p)}</div>`:"";
 async function ownerGive(tid,stars,gid,sn,ex){
   const r=db.collection("players").doc(tid);
   try{
@@ -868,12 +878,14 @@ async function clearLogs(){
     toast("Удалено записей: "+n,"ok");lcSel.clear();await openLogs()
   }catch(e){toast("Ошибка: "+e.message);b.disabled=false}}
 let asel=null;
-function openAv(){asel=S.avi===undefined?null:S.avi;const b=$("tbox");b.style.width="min(440px,100%)";
-  const opt=(i,c)=>`<div class="avo${asel===i?" sel":""}" data-ao="${i===null?"n":i}">${av(S.nick,false,i,"margin:0;width:56px;height:56px;font-size:"+(i===null?26:28)+"px")}</div>`;
-  b.innerHTML=`<h2>Выбери аватарку</h2><div class="avg">${opt(null)}${AVS.map((_,i)=>opt(i)).join("")}</div><div class="row" style="margin-top:12px"><button class="btn g" id="ags">Сохранить</button><button class="btn r" id="agc">Отмена</button></div>`;
+function openAv(tid){const other=tid&&tid!==uid,T=other?ALL.find(x=>x.id===tid):S;if(!T)return;asel=Number.isInteger(T.avi)?T.avi:null;const b=$("tbox");b.style.width="min(440px,100%)";
+  const opt=i=>`<div class="avo${asel===i?" sel":""}" data-ao="${i===null?"n":i}">${av(T.nick,false,i,"margin:0;width:56px;height:56px;font-size:26px")}</div>`;
+  b.innerHTML=`<h2>${other?"Аватарка: "+esc(T.nick):"Выбери аватарку"}</h2><div class="avg">${opt(null)}${AVS.map(i=>opt(i)).join("")}</div><div class="row" style="margin-top:12px"><button class="btn g" id="ags">Сохранить</button><button class="btn r" id="agc">Отмена</button></div>`;
   b.querySelectorAll("[data-ao]").forEach(t=>t.onclick=()=>{asel=t.dataset.ao==="n"?null:+t.dataset.ao;b.querySelectorAll("[data-ao]").forEach(k=>k.classList.toggle("sel",k===t))});
   $("agc").onclick=()=>$("tmodal").classList.remove("show");
-  $("ags").onclick=()=>{S.avi=asel;S.t=Date.now();clearTimeout(st);ref.set({avi:S.avi,t:S.t},{merge:true}).catch(e=>toast("Не сохранилось: "+e.message));$("tmodal").classList.remove("show");render();toast("Аватарка сохранена","ok")};
+  $("ags").onclick=async()=>{$("tmodal").classList.remove("show");
+    if(!other){S.avi=asel;S.t=Date.now();clearTimeout(st);ref.set({avi:S.avi,t:S.t},{merge:true}).catch(e=>toast("Не сохранилось: "+e.message));render();toast("Аватарка сохранена","ok");return}
+    try{await db.collection("players").doc(tid).set({avi:asel},{merge:true});T.avi=asel;toast("Аватарка изменена","ok");openV(tid)}catch(e){toast("Ошибка: "+e.message)}};
   $("tmodal").classList.add("show")}
 let gsel=null;
 function openGift(){
