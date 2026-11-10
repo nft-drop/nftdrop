@@ -289,6 +289,28 @@ select{width:100%;padding:12px;border-radius:12px;border:1px solid #333a4d;backg
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
 .chip{padding:8px 12px;border-radius:20px;border:1px solid #333a4d;background:var(--card);color:var(--mut);font-weight:700;font-size:12px}
 .chip.on{background:#3a1d28;border-color:#ff7a90;color:#ff7a90}
+#ttt{position:fixed;inset:0;z-index:14;display:none;overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 12px) 14px calc(env(safe-area-inset-bottom,0px) + 28px);background:radial-gradient(600px 400px at 10% -5%,#0e4a7a88,transparent),var(--bg)}
+#ttt.on{display:block;animation:tbin .45s var(--spring)}#ttt .th{display:flex;align-items:center;justify-content:space-between;font-size:19px;margin-bottom:12px}
+.tpp{display:flex;gap:10px;align-items:stretch}.tp{flex:1;min-width:0;background:var(--card);border:2px solid #262a38;border-radius:18px;padding:14px 8px;text-align:center;transition:border-color .35s,box-shadow .35s,background .35s}
+#ttt.first .tp{animation:tbin .6s var(--spring) both}.tp.rd{border-color:#35e07a;box-shadow:0 0 22px #35e07a66;background:#0f2a1b}.tp.tn{border-color:#2aabee;box-shadow:0 0 18px #2aabee77}
+.tp.wait{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:210px;color:var(--mut);border-style:dashed}.tw{font-size:38px;animation:dotp 1.6s ease-in-out infinite}
+.tnk{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;margin:0 0 6px;font-size:15px}.tnk .nn{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tp .sk,.trm .sk{width:100%;flex:none;margin:0}.tmk{display:block;font-style:normal;font-size:12px;font-weight:800;margin-bottom:8px}.tmk.X{color:#2aabee}.tmk.O{color:#ffb84d}.tok{margin-top:8px;color:#35e07a;font-weight:900;animation:tbin .4s var(--spring)}
+.tinfo{text-align:center;color:var(--mut);font-size:13px;margin:12px 0 8px}.tbt{margin-top:8px}.tturn{text-align:center;font-weight:900;font-size:19px;margin:16px 0 4px;color:var(--mut);transition:color .3s}.tturn.mine{color:#fff;animation:tpulse 1.4s ease-in-out infinite}.tleft{font-size:13px;color:var(--gold);margin-left:6px}
+.tbd{width:min(330px,100%);margin:8px auto 0;position:relative;aspect-ratio:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.tbd.tbin{animation:tbin .7s var(--spring)}
+.tc{background:var(--card);border:1px solid #2c3146;border-radius:14px;display:flex;align-items:center;justify-content:center;transition:background .25s,transform .25s var(--spring);min-width:0}.tbd.my .tc.e{cursor:pointer;background:#1b2036}.tbd.my .tc.e:active{transform:scale(.92)}.tc svg{width:72%;height:72%}
+.xs{stroke:#2aabee;stroke-width:12;stroke-linecap:round;fill:none;stroke-dasharray:75}.os{stroke:#ffb84d;stroke-width:12;fill:none;stroke-dasharray:176;transform-origin:50% 50%;transform:rotate(-90deg)}
+.tc svg.new .xs{animation:tdraw .35s ease-out both}.tc svg.new .x2{animation-delay:.18s}.tc svg.new .os{animation:tdraw2 .5s ease-out both}
+.twl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.twl line{stroke:#35e07a;stroke-width:9;stroke-linecap:round;stroke-dasharray:300;animation:twl .6s .15s ease-out both;filter:drop-shadow(0 0 8px #35e07a)}
+.trm{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid #262a38;border-radius:16px;padding:12px;margin-bottom:10px;animation:tbin .45s var(--spring) both}.trl{width:84px;text-align:center;font-size:13px}.trl b{display:block;word-break:break-word}.trn{width:104px;flex:none}.trm .btn{padding:12px;font-size:14px;flex:1}
+.tres{position:fixed;inset:0;z-index:16;background:#0b0d14ee;backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;animation:tfade .45s both}
+.tres h3{font-size:30px;letter-spacing:3px;margin:0 0 16px}.tres.win h3{color:#35e07a;text-shadow:0 0 26px #35e07a;animation:tbin .7s var(--spring)}.tres.lose h3{color:#ff4d6d;text-shadow:0 0 22px #ff4d6d}.tres.dr h3{color:var(--gold)}
+.trc{position:relative;width:170px;margin-bottom:14px}.trc .sk{width:100%;margin:0}.tres.win .trc{animation:twin 1s var(--spring) both}.tres.win .trc .sk{box-shadow:0 0 44px #35e07a}.tres.lose .trc{animation:tlose 2s ease-in .5s forwards}.tres.dr .trc{animation:tbin .6s var(--spring)}
+.tres p{color:var(--mut);margin:0 0 6px}.tres .btn{width:min(260px,100%);margin-top:12px;opacity:0;animation:tfade .5s 1.3s forwards}
+@keyframes tbin{from{opacity:0;transform:translateY(26px) scale(.86)}to{opacity:1;transform:none}}@keyframes tfade{from{opacity:0}to{opacity:1}}@keyframes tpulse{0%,100%{text-shadow:0 0 0 #2aabee}50%{text-shadow:0 0 16px #2aabee}}
+@keyframes tdraw{from{stroke-dashoffset:75}to{stroke-dashoffset:0}}@keyframes tdraw2{from{stroke-dashoffset:176}to{stroke-dashoffset:0}}@keyframes twl{from{stroke-dashoffset:300}to{stroke-dashoffset:0}}
+@keyframes twin{0%{opacity:0;transform:scale(.15) rotate(-25deg)}60%{opacity:1;transform:scale(1.18) rotate(4deg)}100%{transform:none}}
+@keyframes tlose{0%{transform:none}12%{transform:translateX(-9px) rotate(-4deg)}24%{transform:translateX(9px) rotate(4deg)}36%{transform:translateX(-6px) rotate(-3deg)}50%{transform:none;filter:grayscale(.2)}100%{transform:translateY(260px) rotate(24deg) scale(.55);opacity:0;filter:grayscale(1) brightness(.5)}}
 </style>
 </head>
 <body>
@@ -332,6 +354,7 @@ select{width:100%;padding:12px;border-radius:12px;border:1px solid #333a4d;backg
   <p style="color:var(--mut);font-size:13px;text-align:center">После выхода можно войти снова с тем же ником — все подарки и звёзды сохранятся.</p>
 </section>
 </main>
+<div id="ttt"><div class="th"><b>❌⭕ Крестики-нолики</b><button class="back" data-tx="1">✕</button></div><div id="tbody"></div></div>
 <div class="modal" id="tmodal"><div class="mbox" id="tbox"></div></div>
 <div class="modal" id="promo"><div class="mbox"><h2>🎟️ Промокод</h2><input id="pcode" placeholder="Введи промокод" autocomplete="off" autocapitalize="off"><div class="err" id="pmsg"></div><div class="row"><button class="btn" id="pgo">Активировать</button><button class="btn r" id="pclose">Закрыть</button></div></div></div>
 <div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
@@ -419,7 +442,7 @@ const av=(n,v,a,x,k)=>{const ok=Number.isInteger(a)&&a>=0&&a<AVS.length,pm=ok&&a
 const avEdit=p=>`<div class="avw" data-avedit="1">${av(p.nick,p.vip&&!p.banned,p.avi,"",avk(p))}<span class="avp"><svg viewBox="0 0 24 24" width="13" height="13" fill="#fff"><path d="M3 17.25V21h3.75L17.8 9.95l-3.75-3.75L3 17.25zM20.7 7.04a1 1 0 0 0 0-1.41l-2.33-2.33a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.82-1.84z"/></svg></span></div>`;
 function pick(){let r=Math.random()*SUMW;for(const x of ITEMS){r-=x.w;if(r<=0)return x}return ITEMS[0]}
 let st;const save=()=>{clearTimeout(st);st=setTimeout(()=>{if(!S)return;S.t=Date.now();ref.set(S,{merge:true}).catch(()=>{})},400)};
-const norm=d=>{const o=JSON.parse(JSON.stringify(d||{}));o.inv=Array.isArray(o.inv)?o.inv:[];o.bal=Number.isFinite(o.bal)?o.bal:1000;o.owner=o.owner===true;o.avi=Number.isInteger(o.avi)&&o.avi>=0&&o.avi<AVS.length?o.avi:null;o.avc=Number.isInteger(o.avc)&&o.avc>=0&&o.avc<AVC.length?o.avc:0;{const m={};if(o.avcs&&typeof o.avcs==="object")for(const k in o.avcs){const v=o.avcs[k];if(Number.isInteger(v)&&v>=0&&v<AVC.length)m[k]=v}o.avcs=m}o.pins=Array.isArray(o.pins)?o.pins.filter(u=>o.inv.some(x=>x.uid===u)).slice(0,4):[];o.uid=Number.isFinite(o.uid)?o.uid:(o.inv.reduce((m,x)=>Math.max(m,x.uid||0),0)+1);return o};
+const norm=d=>{const o=JSON.parse(JSON.stringify(d||{}));o.inv=Array.isArray(o.inv)?o.inv:[];o.bal=Number.isFinite(o.bal)?o.bal:1000;o.owner=o.owner===true;o.ttt=typeof o.ttt==="string"?o.ttt:null;o.avi=Number.isInteger(o.avi)&&o.avi>=0&&o.avi<AVS.length?o.avi:null;o.avc=Number.isInteger(o.avc)&&o.avc>=0&&o.avc<AVC.length?o.avc:0;{const m={};if(o.avcs&&typeof o.avcs==="object")for(const k in o.avcs){const v=o.avcs[k];if(Number.isInteger(v)&&v>=0&&v<AVC.length)m[k]=v}o.avcs=m}o.pins=Array.isArray(o.pins)?o.pins.filter(u=>o.inv.some(x=>x.uid===u)).slice(0,4):[];o.uid=Number.isFinite(o.uid)?o.uid:(o.inv.reduce((m,x)=>Math.max(m,x.uid||0),0)+1);return o};
 // ---- вход ----
 function showLogin(msg){$("login").classList.remove("hide");$("lmsg").textContent=msg||"Введи ник, чтобы начать";$("lform").style.display="block"}
 const hex=n=>[...n].map(c=>c.codePointAt(0).toString(16)).join("");
@@ -455,7 +478,7 @@ async function doAuth(reg){
 }
 $("lbtn").onclick=()=>doAuth(false);$("rbtn").onclick=()=>doAuth(true);
 $("pass").onkeydown=e=>{if(e.key==="Enter")doAuth(false)};
-function start(){$("login").classList.add("hide");show("r");render();startLive();applyBan();applyClosed()}
+function start(){$("login").classList.add("hide");show("r");render();startLive();applyBan();applyClosed();tgResume()}
 let auth;
 (()=>{
   if(!window.firebase||/ВСТАВЬ/.test(FIREBASE_CONFIG.apiKey)){$("lmsg").textContent="Сайт ещё не настроен: вставь настройки Firebase в начало index.html";return}
@@ -470,6 +493,84 @@ let auth;
     });
   }catch(e){$("lmsg").textContent="Ошибка подключения Firebase: "+e.message}
 })();
+// ===== Крестики-нолики (дуэль на NFT) =====
+const TGL=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]],TG_LIM=45;
+let TG={id:null,room:null,unsub:null,tk:null,res:false,cl:false,to:false,pst:null,pb:".........",first:false};
+const tgSide=r=>r&&r.h&&r.h.id===uid?"h":"g",tgOpp=s=>s==="h"?"g":"h";
+const tgWin=b=>{for(const l of TGL)if(b[l[0]]!=="."&&b[l[0]]===b[l[1]]&&b[l[0]]===b[l[2]])return l;return null};
+const tgRoom=id=>db.collection("ttt").doc(id);
+const tgMe=()=>({id:uid,nick:S.nick,vip:!!(S.vip&&!S.banned),avi:Number.isInteger(S.avi)?S.avi:null,avc:avk(S)});
+function tgOpen(id){const o=$("ttt");o.classList.add("on");TG.first=true;setTimeout(()=>TG.first=false,700);TG.res=false;TG.cl=false;TG.pst=null;TG.pb=".........";
+  if(id){TG.id=id;TG.unsub=tgRoom(id).onSnapshot(tgSnap,e=>{toast("Ошибка комнаты: "+e.message)});clearInterval(TG.tk);TG.tk=setInterval(tgTick,1000)}
+  tgDraw();if(!id)tgRooms()}
+function tgClose(){if(TG.unsub)TG.unsub();clearInterval(TG.tk);TG={id:null,room:null,unsub:null,tk:null,res:false,cl:false,to:false,pst:null,pb:".........",first:false};const o=$("ttt");o.classList.remove("on");o.innerHTML='<div class="th"><b>❌⭕ Крестики-нолики</b><button class="back" data-tx="1">✕</button></div><div id="tbody"></div>';if(S){render();drawCases()}}
+function tgSnap(snap){
+  if(!snap.exists){if(TG.room&&TG.room.st==="done")return;if(S&&S.ttt===TG.id){S.ttt=null;S.t=Date.now();ref.set({ttt:null,t:S.t},{merge:true}).catch(()=>{})}tgClose();return}
+  const r=snap.data();r.id=snap.id;const prev=TG.room;TG.room=r;
+  if(r.h.id!==uid&&!(r.g&&r.g.id===uid)){tgClose();return}
+  if(!TG.res)tgDraw();
+  if(r.st==="lobby"&&r.rd&&r.rd.h&&r.rd.g)tgStart();
+  if(r.st==="done"&&!(prev&&prev.st==="done")){tgClaim();setTimeout(tgRes,r.w&&r.w!=="d"&&r.ln?1400:500)}
+  else if(r.st==="done"&&!prev)tgClaim(),setTimeout(tgRes,300)}
+function tgPick(title,cb){if(!S.inv.length){toast("У тебя нет подарков для ставки");return}const b=$("tbox");b.style.width="min(460px,100%)";
+  b.innerHTML=`<h2>${title}</h2><div class="grid" style="max-height:55vh;overflow-y:auto">${S.inv.slice().reverse().map(o=>`<div>${cardI(o,"",`data-tp="${o.uid}"`)}</div>`).join("")}</div><button class="btn r" id="tpc" style="margin-top:10px">Отмена</button>`;
+  b.querySelectorAll("[data-tp]").forEach(t=>t.onclick=()=>{const it=S.inv.find(o=>o.uid===+t.dataset.tp);$("tmodal").classList.remove("show");if(it)cb(it)});
+  $("tpc").onclick=()=>$("tmodal").classList.remove("show");$("tmodal").classList.add("show")}
+async function tgCreate(it){if(S.ttt){toast("Ты уже в комнате");return}const now=Date.now(),rr=db.collection("ttt").doc(),inv=S.inv.filter(o=>o.uid!==it.uid);
+  try{const bt=db.batch();bt.set(rr,{st:"wait",h:{...tgMe(),item:it},g:null,rd:{h:false,g:false},ids:[uid],cl:{h:false,g:true},t:now,lm:now,b:".........",turn:"h",mk:null,w:null,ln:null,why:""});bt.set(ref,{inv,ttt:rr.id,t:now},{merge:true});await bt.commit();
+    S.inv=inv;S.ttt=rr.id;S.t=now;tgBind(rr.id)}catch(e){toast("Не удалось создать: "+e.message)}}
+async function tgJoin(id,it){if(S.ttt){toast("Ты уже в комнате");return}const now=Date.now(),rr=tgRoom(id),inv=S.inv.filter(o=>o.uid!==it.uid);
+  try{await db.runTransaction(async tx=>{const s=await tx.get(rr);if(!s.exists)throw new Error("Комната закрыта");const d=s.data();if(d.st!=="wait"||d.g)throw new Error("Комната уже занята");
+      tx.update(rr,{g:{...tgMe(),item:it},st:"lobby",ids:[d.h.id,uid],rd:{h:false,g:false},cl:{h:false,g:false},t:now,lm:now});tx.set(ref,{inv,ttt:id,t:now},{merge:true})});
+    S.inv=inv;S.ttt=id;S.t=now;tgBind(id)}catch(e){toast(e.message);tgRooms()}}
+function tgBind(id){TG.id=id;TG.room=null;TG.res=false;TG.cl=false;if(TG.unsub)TG.unsub();TG.unsub=tgRoom(id).onSnapshot(tgSnap,e=>toast("Ошибка комнаты: "+e.message));clearInterval(TG.tk);TG.tk=setInterval(tgTick,1000);tgDraw()}
+async function tgReady(){const r=TG.room;if(!r||r.st!=="lobby")return;const sd=tgSide(r);try{await db.runTransaction(async tx=>{const s=await tx.get(tgRoom(r.id));const d=s.data();if(d.st!=="lobby")return;tx.update(tgRoom(r.id),{["rd."+sd]:!d.rd[sd]})})}catch(e){toast(e.message)}}
+async function tgStart(){const r=TG.room;try{await db.runTransaction(async tx=>{const rr=tgRoom(r.id),s=await tx.get(rr);if(!s.exists)return;const d=s.data();if(d.st!=="lobby"||!d.rd.h||!d.rd.g)return;const hx=Math.random()<.5;tx.update(rr,{st:"play",mk:{h:hx?"X":"O",g:hx?"O":"X"},turn:hx?"h":"g",b:".........",lm:Date.now(),w:null,ln:null})})}catch(e){}}
+async function tgMove(i){const r=TG.room;if(!r||r.st!=="play"||TG.mv)return;const sd=tgSide(r);if(r.turn!==sd||r.b[i]!==".")return;TG.mv=true;
+  try{await db.runTransaction(async tx=>{const rr=tgRoom(r.id),s=await tx.get(rr);const d=s.data();if(d.st!=="play"||d.turn!==sd||d.b[i]!==".")return;const b=d.b.slice(0,i)+d.mk[sd]+d.b.slice(i+1),ln=tgWin(b),u={b,lm:Date.now()};
+      if(ln){u.st="done";u.w=sd;u.ln=ln}else if(!b.includes(".")){u.st="done";u.w="d"}else u.turn=tgOpp(sd);tx.update(rr,u)})}catch(e){toast(e.message)}TG.mv=false}
+async function tgTimeout(){const r=TG.room,sd=tgSide(r);try{await db.runTransaction(async tx=>{const rr=tgRoom(r.id),s=await tx.get(rr),d=s.data();if(d.st!=="play"||d.turn===sd||Date.now()-d.lm<(TG_LIM-2)*1000)return;tx.update(rr,{st:"done",w:sd,ln:null,why:"timeout"})})}catch(e){}}
+function tgTick(){const r=TG.room;if(!r||r.st!=="play")return;const left=Math.ceil(TG_LIM-(Date.now()-r.lm)/1000),el=$("tleft");if(el)el.textContent="⏱ "+Math.max(0,left);if(left<-1&&r.turn!==tgSide(r)&&!TG.to){TG.to=true;tgTimeout().finally(()=>TG.to=false)}}
+async function tgLeave(){const r=TG.room;if(!r||r.st==="play")return;const sd=tgSide(r),rr=tgRoom(r.id);
+  try{if(r.st==="lobby"&&sd==="g"){const now=Date.now();let it;await db.runTransaction(async tx=>{const s=await tx.get(rr),d=s.data();if(d.st!=="lobby"||!d.g||d.g.id!==uid)return;it=d.g.item;tx.update(rr,{g:null,st:"wait",ids:[d.h.id],rd:{h:false,g:false},cl:{h:false,g:true},t:now});tx.set(ref,{inv:S.inv.concat({...it,uid:S.uid}),uid:S.uid+1,ttt:null,t:now},{merge:true})});
+      if(it){S.inv.push({...it,uid:S.uid++});S.ttt=null;S.t=now}tgClose();return}
+    await db.runTransaction(async tx=>{const s=await tx.get(rr);if(!s.exists)return;const d=s.data();if(d.st==="play"||d.st==="done")return;tx.update(rr,{st:"done",w:"d",why:"cancel",ln:null})});}catch(e){toast(e.message)}}
+async function tgClaim(){const r=TG.room;if(!r||TG.cl)return;const sd=tgSide(r);if(r.cl&&r.cl[sd])return;TG.cl=true;const now=Date.now(),rr=tgRoom(r.id);let got=null,inv,un;
+  try{await db.runTransaction(async tx=>{got=null;const s=await tx.get(rr);if(!s.exists)return;const d=s.data();if(d.cl&&d.cl[sd])return;const g=d.w==="d"?[d[sd].item]:d.w===sd?[d.h.item,d.g.item]:[];
+      inv=S.inv.concat(g.map((it,i)=>({...it,uid:S.uid+i})));un=S.uid+g.length;const cl=Object.assign({},d.cl,{[sd]:true});if(cl.h&&cl.g)tx.delete(rr);else tx.update(rr,{cl});tx.set(ref,{inv,uid:un,ttt:null,t:now},{merge:true});got=g});
+    if(got){S.inv=inv;S.uid=un;S.ttt=null;S.t=now;if(r.w===sd&&got.length===2){const o=r[tgOpp(sd)];logE("gift","🎮 Крестики-нолики: "+S.nick+" победил "+o.nick+" и забрал "+ITEMS[o.item.id].n+" #"+o.item.sn,o.id)}render()}else if(!got){S.ttt=null}}
+  catch(e){TG.cl=false;toast("Не удалось забрать NFT: "+e.message)}}
+function tgPanel(sd,r){const m=r[sd];if(!m)return '<div class="tp wait"><div class="tw">⏳</div><b>Ждём игрока…</b></div>';const rd=r.st==="lobby"&&r.rd&&r.rd[sd],tn=r.st==="play"&&r.turn===sd;
+  return `<div class="tp${rd?" rd":""}${tn?" tn":""}">${av(m.nick,m.vip,m.avi,"width:64px;height:64px;font-size:28px;margin:0 auto 8px",m.avc)}<b class="tnk"><span class="nn">${esc(m.nick)}</span>${m.vip?'<span class="vb">👑 VIP</span>':""}</b>${r.mk&&r.mk[sd]?`<i class="tmk ${r.mk[sd]}">${r.mk[sd]==="X"?"✕ крестики":"◯ нолики"}</i>`:""}${cardI(m.item)}${rd?'<div class="tok">✔ Готов</div>':""}</div>`}
+const tgMark=(c,nw)=>c==="X"?`<svg viewBox="0 0 100 100" class="${nw?"new":""}"><path class="xs" d="M24 24L76 76"/><path class="xs x2" d="M76 24L24 76"/></svg>`:`<svg viewBox="0 0 100 100" class="${nw?"new":""}"><circle class="os" cx="50" cy="50" r="28"/></svg>`;
+function tgDraw(){const o=$("tbody");if(!o)return;const r=TG.room;$("ttt").classList.toggle("first",TG.first);const hd=document.querySelector("#ttt .th [data-tx]");if(hd)hd.style.display=r&&r.st==="play"?"none":"";
+  if(!TG.id){o.innerHTML=`<button class="btn g" data-tnew="1">➕ Создать комнату (поставить NFT)</button><div class="h2" style="display:flex;justify-content:space-between;align-items:center">Открытые комнаты<button class="chip" data-tref="1">🔄 Обновить</button></div><div id="trooms"><div class="empty">Загрузка…</div></div>`;return}
+  if(!r){o.innerHTML='<div class="empty">Подключаемся…</div>';return}
+  const my=tgSide(r),pl=r.st==="play"||r.st==="done";let h=`<div class="tpp">${tgPanel("h",r)}${tgPanel("g",r)}</div>`;
+  if(r.st==="wait")h+=`<div class="tinfo">Твой NFT в залоге. Ждём второго игрока…</div><button class="btn r tbt" data-tlv="1">Выйти и забрать NFT</button>`;
+  else if(r.st==="lobby"){const me=r.rd[my];h+=`<div class="tinfo">Оба игрока должны нажать «Готов». Потом случайно выберем, кто играет крестиками.</div><button class="btn ${me?"":"g"} tbt" data-trd="1">${me?"Отменить готовность":"✔ Готов"}</button><button class="btn r tbt" data-tlv="1">Выйти</button>`}
+  else if(pl){const mine=r.turn===my,fin=r.st==="done";
+    h+=`<div class="tturn${mine&&!fin?" mine":""}">${fin?(r.w==="d"?"Ничья":r.w===my?"Ты выиграл! 🎉":"Ты проиграл"):mine?"Твой ход":"Ход соперника…"} ${fin?"":`<span id="tleft" class="tleft">⏱ ${Math.max(0,Math.ceil(TG_LIM-(Date.now()-r.lm)/1000))}</span>`}</div>`;
+    const nw=TG.pst!=="play"&&TG.pst!=="done";let cells="";for(let i=0;i<9;i++){const c=r.b[i];cells+=`<div class="tc ${c==="."?"e":""}" ${c==="."&&!fin&&mine?`data-tc="${i}"`:""}>${c==="."?"":tgMark(c,TG.pb[i]==="."&&TG.pst!==null)}</div>`}
+    let wl="";if(r.ln){const p=i=>[(i%3)*100+50,Math.floor(i/3)*100+50],a=p(r.ln[0]),b=p(r.ln[2]);wl=`<svg class="twl" viewBox="0 0 300 300"><line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/></svg>`}
+    h+=`<div class="tbd${nw?" tbin":""}${mine&&!fin?" my":""}">${cells}${wl}</div>`}
+  TG.pb=r.b||".........";TG.pst=r.st;o.innerHTML=h}
+async function tgRooms(){const el=$("trooms");if(!el)return;try{const q=await db.collection("ttt").where("st","==","wait").limit(20).get(),now=Date.now(),L=q.docs.map(d=>({id:d.id,...d.data()})).filter(r=>r.h&&now-(r.t||0)<7200000).sort((a,b)=>b.t-a.t);const e2=$("trooms");if(!e2)return;
+  e2.innerHTML=L.length?L.map(r=>`<div class="trm"><div class="trl">${av(r.h.nick,r.h.vip,r.h.avi,"width:44px;height:44px;font-size:20px;margin:0 auto 6px",r.h.avc)}<b>${esc(r.h.nick)}</b>${r.h.vip?'<span class="vb">👑 VIP</span>':""}</div><div class="trn">${cardI(r.h.item)}</div><button class="btn u" data-tj="${r.id}">Войти</button></div>`).join(""):'<div class="empty">Открытых комнат нет. Создай свою!</div>'}catch(e){el.innerHTML='<div class="empty">Ошибка: '+esc(e.message)+'<br>Проверь правила Firestore для коллекции ttt</div>'}}
+function tgRes(){const r=TG.room;if(!r||TG.res||r.st!=="done")return;TG.res=true;const sd=tgSide(r),op=r[tgOpp(sd)],el=document.createElement("div"),cls=r.w==="d"?"dr":r.w===sd?"win":"lose";el.className="tres "+cls;let h;
+  if(r.w==="d")h=`<h3>${r.why==="cancel"?"КОМНАТА ЗАКРЫТА":"НИЧЬЯ"}</h3><div class="trc">${cardI(r[sd].item)}</div><p>Твой NFT вернулся к тебе</p>`;
+  else if(r.w===sd)h=`<h3>ПОБЕДА!</h3><div class="trc">${cardI(op.item)}</div><p>${r.why==="timeout"?"Соперник не ответил вовремя. ":""}Ты забрал NFT у ${esc(op.nick)}</p>`;
+  else h=`<h3>ПОРАЖЕНИЕ</h3><div class="trc">${cardI(r[sd].item)}</div><p>${esc(op.nick)} забирает твой NFT</p>`;
+  el.innerHTML=h+'<button class="btn" id="tdone">Продолжить</button>';$("ttt").appendChild(el);if(cls==="win")burst(el.querySelector(".trc"),["#35e07a","#fff","#ffc83d","#2aabee"],70);$("tdone").onclick=()=>tgClose()}
+function tgResume(){if(S&&S.ttt&&!TG.id)tgOpen(S.ttt)}
+$("ttt").addEventListener("click",e=>{const t=e.target.closest("[data-tx],[data-tnew],[data-tref],[data-tj],[data-trd],[data-tlv],[data-tc]");if(!t||!S)return;
+  if(t.dataset.tx){const r=TG.room;if(r&&r.st==="play")return;if(TG.id&&r&&r.st!=="done"){tgLeave();return}tgClose()}
+  else if(t.dataset.tnew)tgPick("Выбери NFT для ставки",tgCreate);
+  else if(t.dataset.tref){$("trooms").innerHTML='<div class="empty">Загрузка…</div>';tgRooms()}
+  else if(t.dataset.tj){const id=t.dataset.tj;tgPick("Поставь NFT, чтобы войти",it=>tgJoin(id,it))}
+  else if(t.dataset.trd)tgReady();else if(t.dataset.tlv)tgLeave();else if(t.dataset.tc)tgMove(+t.dataset.tc)});
+window.addEventListener("beforeunload",e=>{if(TG.room&&TG.room.st==="play"){e.preventDefault();e.returnValue=""}});
+
 // ---- навигация ----
 function show(t){document.querySelectorAll("nav button,.tab").forEach(e=>e.classList.remove("on"));const b=document.querySelector(`nav button[data-t="${t}"]`);if(b)b.classList.add("on");$("t-"+t).classList.add("on");if(t==="t")loadTop();if(t==="f")doSearch();if(t==="p")render();if(t==="c")showChats()}
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{if(!busy)show(b.dataset.t)});
@@ -515,10 +616,10 @@ async function doSearch(){if(!ALL.length)await loadAll();const q=$("q").value.tr
 $("q").oninput=doSearch;
 async function openV(id){if(id===uid){show("p");return}await loadAll();await refreshP(id);const p=ALL.find(x=>x.id===id);if(!p){toast("Профиль не найден");return}vid=id;$("other").innerHTML=prof(p,false,ovHead(p))+ownerPanel(p);show("v")}
 // ---- рендер ----
-function chance(){if(selB==null||(!selA.length&&!upStars))return 0;const f=sumA()+upStars,t=ITEMS[selB].p;return t<=f?0:Math.max(1,Math.min(99,f/t*100))}
+function chance(){if(selB==null||!selA.length)return 0;const f=sumA()+upStars,t=ITEMS[selB].p;return t<=f?0:Math.max(1,Math.min(99,f/t*100))}
 const sumA=()=>selA.reduce((s,u)=>{const o=S.inv.find(o=>o.uid===u);return s+(o?ITEMS[o.id].p:0)},0);
 function render(){
-  if(!S)return;animBal();if(upStars>S.bal)upStars=S.bal;{const ui=$("ustars");ui.placeholder="Добавить звёзды (у тебя "+S.bal+" ⭐)";if(document.activeElement!==ui)ui.value=upStars||""}
+  if(!S)return;animBal();if(!selA.length)upStars=0;if(upStars>S.bal)upStars=S.bal;{const ui=$("ustars");ui.placeholder="Добавить звёзды (у тебя "+S.bal+" ⭐)";if(document.activeElement!==ui)ui.value=upStars||""}
   drawCatalog();
   $("me").innerHTML=prof(S,true,'<button class="btn g" data-shop="1" style="margin:0 0 10px">🛍 Магазин</button>')+ownerPanel(S);
   $("myList").innerHTML=S.inv.length?S.inv.slice().reverse().map(o=>cardI(o,selA.includes(o.uid)?"sel":"",`data-a="${o.uid}"`)).join(""):'<div class="empty" style="grid-column:1/-1">Нет подарков — открой кейс</div>';
@@ -535,6 +636,7 @@ function sell(u){const i=S.inv.findIndex(o=>o.uid==u);if(i<0)return;S.bal+=ITEMS
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-logs]")&&isOwner()){openLogs();return}
   if(e.target.closest("[data-shop]")&&!busy&&S){openShop();return}
+  if(e.target.closest("[data-ttt]")&&!busy&&S){tgOpen(S.ttt||null);return}
   const cs=e.target.closest("[data-case]");if(cs&&!busy&&S){openCase(+cs.dataset.case);return}
   const lc=e.target.closest("[data-lc]");if(lc&&isOwner()){const k=lc.dataset.lc;lcSel.has(k)?lcSel.delete(k):lcSel.add(k);drawLogs();return}
   if(e.target.closest("[data-lcall]")&&isOwner()){LCATS.forEach(c=>lcSel.add(c[0]));drawLogs();return}
@@ -583,7 +685,7 @@ function pickC(c){
   const P=cpool(c),T=P.reduce((s,x)=>s+x.w,0);let r=Math.random()*T;for(const x of P){r-=x.w;if(r<=0)return x}return P[P.length-1]}
 const emptyCard=(cls="",ex="")=>`<div class="sk ${cls}" style="--c:#6b7280;--b1:#2a3040;--b2:#10131d"><div class="gf"><div class="em" style="font-size:38px">💨</div></div><b>Пусто</b><i>0 ⭐</i>${ex}</div>`;
 const pct=v=>v<0.01?"<0.01%":v.toFixed(2)+"%";
-function drawCases(){$("rcases").innerHTML=CASES.map(c=>`<div class="case c${c.id}" data-case="${c.id}"><div class="cico">${c.ico}</div><div class="cinfo"><b>${c.n}</b><span>${c.d}</span></div><div class="cprice">${c.cost?c.cost+" ⭐":"Бесплатно"}</div></div>`).join("")}
+function drawCases(){$("rcases").innerHTML='<div class="case c2" data-ttt="1"><div class="cico">❌⭕</div><div class="cinfo"><b>Крестики-нолики</b><span>Дуэль на NFT: проигравший отдаёт подарок</span></div><div class="cprice">PvP</div></div>'+CASES.map(c=>`<div class="case c${c.id}" data-case="${c.id}"><div class="cico">${c.ico}</div><div class="cinfo"><b>${c.n}</b><span>${c.d}</span></div><div class="cprice">${c.cost?c.cost+" ⭐":"Бесплатно"}</div></div>`).join("")}
 function drawCatalog(){
   const g=$("catalog");if(!CK){g.innerHTML="";return}
   if(CK.lot){g.innerHTML=card(cpool(CK)[0],null,"","",`<small>${(LOT_P*100).toFixed(0)}%</small>`)+emptyCard("",`<small>${((1-LOT_P)*100).toFixed(0)}%</small>`);return}
@@ -628,7 +730,7 @@ $("openBtn").onclick=()=>{
   }catch(e){busy=false;btnState();$("rres").textContent="Ошибка: "+e.message;try{render()}catch(_){}}},6700+(M-1)*600);
 };
 // ---- апгрейд ----
-$("ustars").oninput=()=>{if(busy||!S)return;let v=Math.floor(+$("ustars").value)||0;if(v<0)v=0;if(v>S.bal){v=S.bal;$("ustars").value=v||""}upStars=v;if(selB!=null&&ITEMS[selB].p<=sumA()+upStars)selB=null;render()};
+$("ustars").oninput=()=>{if(busy||!S)return;if(!selA.length){$("ustars").value="";upStars=0;toast("Сначала выбери NFT для апгрейда");return}let v=Math.floor(+$("ustars").value)||0;if(v<0)v=0;if(v>S.bal){v=S.bal;$("ustars").value=v||""}upStars=v;if(selB!=null&&ITEMS[selB].p<=sumA()+upStars)selB=null;render()};
 let cur=0;
 $("upBtn").onclick=()=>{
   const ch=chance();if(!ch||busy)return;if(upStars>S.bal){toast("Не хватает звёзд");return}const stars=upStars;S.bal-=stars;upStars=0;animBal();busy=true;$("upBtn").disabled=true;
