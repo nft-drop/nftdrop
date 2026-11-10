@@ -42,6 +42,8 @@ main{padding:0 14px 40px;max-width:900px;margin:auto}
 .sk small{display:block;color:var(--mut);font-size:11px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:9px}
 .grid .sk{width:auto;flex:none;margin:0;cursor:pointer}
+.pinb{position:absolute;top:6px;left:6px;z-index:3;font-size:15px;filter:drop-shadow(0 1px 3px #000)}
+.grid .sk.pinned{outline:2px solid #ffd54a;box-shadow:0 0 14px rgba(255,213,74,.45)}
 .grid .sk.sel{outline:2px solid #fff;box-shadow:0 0 22px var(--c)}
 .grid .sk.sel::before{content:"✓";position:absolute;top:8px;right:8px;color:#fff;background:var(--c);border-radius:50%;width:18px;height:18px;line-height:18px;font-size:12px;font-weight:900;z-index:2}
 .strip-w{position:relative;overflow:hidden;background:#0d1019;border:1px solid #262a38;border-radius:16px;padding:16px 0;margin:12px 0;contain:layout paint}
@@ -385,7 +387,7 @@ const vipBox=()=>`<div class="vipbox"><div><b>👑 VIP-статус</b><span>З�
 const av=(n,v)=>`<div class="av${v?" vip":""}" style="--avc:hsl(${hue(n)} 60% 45%);background:hsl(${hue(n)} 60% 45%)">${n[0].toUpperCase()}</div>`;
 function pick(){let r=Math.random()*SUMW;for(const x of ITEMS){r-=x.w;if(r<=0)return x}return ITEMS[0]}
 let st;const save=()=>{clearTimeout(st);st=setTimeout(()=>{if(!S)return;S.t=Date.now();ref.set(S,{merge:true}).catch(()=>{})},400)};
-const norm=d=>{const o=JSON.parse(JSON.stringify(d||{}));o.inv=Array.isArray(o.inv)?o.inv:[];o.bal=Number.isFinite(o.bal)?o.bal:1000;o.owner=o.owner===true;o.uid=Number.isFinite(o.uid)?o.uid:(o.inv.reduce((m,x)=>Math.max(m,x.uid||0),0)+1);return o};
+const norm=d=>{const o=JSON.parse(JSON.stringify(d||{}));o.inv=Array.isArray(o.inv)?o.inv:[];o.bal=Number.isFinite(o.bal)?o.bal:1000;o.owner=o.owner===true;o.pins=Array.isArray(o.pins)?o.pins.filter(u=>o.inv.some(x=>x.uid===u)).slice(0,6):[];o.uid=Number.isFinite(o.uid)?o.uid:(o.inv.reduce((m,x)=>Math.max(m,x.uid||0),0)+1);return o};
 // ---- вход ----
 function showLogin(msg){$("login").classList.remove("hide");$("lmsg").textContent=msg||"Введи ник, чтобы начать";$("lform").style.display="block"}
 const hex=n=>[...n].map(c=>c.codePointAt(0).toString(16)).join("");
@@ -472,7 +474,10 @@ let allT=0;
 async function loadAll(force){if(!force&&ALL.length&&Date.now()-allT<120000)return ALL;try{allT=Date.now();const q=await db.collection("players").limit(300).get();ALL=q.docs.map(d=>({id:d.id,...d.data()}))}catch(e){}return ALL}
 const prow=(p,i)=>`<div class="pod ${i<3?"g"+(i+1):""}${p.vip&&!p.banned?" vip":""}${p.banned?" ban":""}" data-v="${p.id}"><div class="m">${["🥇","🥈","🥉"][i]||""}</div><div class="nm"><b>${nm(p)}</b><span>${p.id===uid?"это ты":"открыть профиль"}</span></div><div class="tt">${total(p)} ⭐<small>${p.bal} ⭐ + подарки ${gifts(p)}</small></div></div>`;
 async function loadTop(){$("top").innerHTML='<div class="empty">Загрузка…</div>';await loadAll();const a=ALL.filter(p=>p.nick).sort((x,y)=>total(y)-total(x)).slice(0,3);$("top").innerHTML=a.length?a.map(prow).join(""):'<div class="empty">Пока никого</div>'}
-const prof0=(p,own,mid)=>`<div class="pf">${av(p.nick,p.vip&&!p.banned)}<h2>${nm(p)}</h2></div>${p.banned?banBox(p):""}${own?(p.vip?'<div class="vipbox on">✨ У тебя активен VIP-статус</div>':vipBox()):""}<div class="stats"><div><b>${total(p)}</b>всего ⭐</div><div><b>${p.bal}</b>на балансе</div><div><b>${gifts(p)}</b>подарки (${(p.inv||[]).length})</div></div>${mid||""}<div class="grid">${(p.inv||[]).length?(p.inv||[]).slice().reverse().map(o=>`<div>${cardI(o,"",!own?`data-gift="${o.uid}"`:"")}${own?`<div class="row"><button class="btn g" data-sell="${o.uid}">Продать</button></div>`:""}${isOwner()?`<div class="row"><button class="btn r" data-del="${o.uid}" data-ot="${p.id||uid}">🗑 Удалить</button></div>`:""}</div>`).join(""):'<div class="empty" style="grid-column:1/-1">Подарков пока нет</div>'}</div>`;
+const isPin=(p,u)=>(p.pins||[]).includes(u);
+const pinSort=p=>{const inv=(p.inv||[]),pins=(p.pins||[]).filter(u=>inv.some(o=>o.uid===u)).slice(0,6);return pins.map(u=>inv.find(o=>o.uid===u)).concat(inv.filter(o=>!pins.includes(o.uid)).reverse())};
+function togglePin(u){u=+u;if(!S||!S.inv.some(o=>o.uid===u))return;S.pins=(S.pins||[]).filter(x=>S.inv.some(o=>o.uid===x));const i=S.pins.indexOf(u);if(i>=0){S.pins.splice(i,1);toast("Откреплено")}else{if(S.pins.length>=6){toast("Можно закрепить максимум 6 подарков 📌");return}S.pins.push(u);toast("Закреплено 📌 "+S.pins.length+"/6","ok")}save();render()}
+const prof0=(p,own,mid)=>`<div class="pf">${av(p.nick,p.vip&&!p.banned)}<h2>${nm(p)}</h2></div>${p.banned?banBox(p):""}${own?(p.vip?'<div class="vipbox on">✨ У тебя активен VIP-статус</div>':vipBox()):""}<div class="stats"><div><b>${total(p)}</b>всего ⭐</div><div><b>${p.bal}</b>на балансе</div><div><b>${gifts(p)}</b>подарки (${(p.inv||[]).length})</div></div>${mid||""}${own&&(p.inv||[]).length?`<div style="color:var(--mut);font-size:12px;text-align:center;margin:0 0 8px">Нажми на подарок, чтобы закрепить или открепить · 📌 ${(p.pins||[]).length}/6</div>`:""}<div class="grid">${(p.inv||[]).length?pinSort(p).map(o=>`<div>${cardI(o,isPin(p,o.uid)?"pinned":"",own?`data-pin="${o.uid}"`:`data-gift="${o.uid}"`,isPin(p,o.uid)?'<span class="pinb">📌</span>':"")}${own?`<div class="row"><button class="btn g" data-sell="${o.uid}">Продать</button></div>`:""}${isOwner()?`<div class="row"><button class="btn r" data-del="${o.uid}" data-ot="${p.id||uid}">🗑 Удалить</button></div>`:""}</div>`).join(""):'<div class="empty" style="grid-column:1/-1">Подарков пока нет</div>'}</div>`;
 const prof=(p,own,mid)=>prof0(p,own,mid)+(own?shop(p):"");
 async function doSearch(){if(!ALL.length)await loadAll();const q=$("q").value.trim().toLowerCase();const a=ALL.filter(p=>p.nick&&p.nl.includes(q)).sort((x,y)=>total(y)-total(x)).slice(0,25);$("found").innerHTML=a.length?a.map(p=>prow(p,9)).join(""):'<div class="empty">Никого не нашли</div>'}
 $("q").oninput=doSearch;
@@ -520,6 +525,7 @@ document.addEventListener("click",e=>{
   if(e.target.closest("[data-nsoff]")&&!busy){S.ns=null;save();render();return}
   const v=e.target.closest("[data-v]");if(v&&!busy){openV(v.dataset.v);return}
   const s=e.target.closest("[data-sell]");if(s&&!busy){sell(s.dataset.sell);return}
+  const pn=e.target.closest("[data-pin]");if(pn&&!busy){togglePin(pn.dataset.pin);return}
   const a=e.target.closest("[data-a]");if(a&&!busy){const u=+a.dataset.a,i=selA.indexOf(u);i<0?selA.push(u):selA.splice(i,1);if(selB!=null&&ITEMS[selB].p<=sumA()+upStars)selB=null;render();return}
   const b=e.target.closest("[data-b]");if(b&&!busy){selB=+b.dataset.b;render()}
 });
