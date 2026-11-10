@@ -378,7 +378,7 @@ const total=p=>(p.bal||0)+(p.inv||[]).reduce((s,o)=>s+ITEMS[o.id].p,0);
 const gifts=p=>(p.inv||[]).reduce((s,o)=>s+ITEMS[o.id].p,0);
 const hue=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))%360;return h};
 const NS=[{id:"purple",name:"Фиолетовый",p:200},{id:"green",name:"Зелёный",p:200},{id:"orange",name:"Оранжевый",p:200},{id:"sky",name:"Небесный",p:200},{id:"pink",name:"Розовый",p:250},{id:"teal",name:"Бирюзовый",p:250},{id:"yellow",name:"Жёлтый",p:300},{id:"rainbow",name:"Радужный",p:300},{id:"blood",name:"Кровавый",p:500,vip:true}];
-const isOn=p=>!!(p&&p.online===true&&p.seen&&Date.now()-p.seen<150000);
+const isOn=p=>!!(p&&p.online===true&&p.seen&&Date.now()-p.seen<400000);
 const nm=p=>{if(p.banned)return '<span class="nn">'+esc0(p.nick)+'</span><span class="bb">ЗАБЛОКИРОВАН</span>';const st=NS.find(x=>x.id===p.ns);const n=st?`<span class="nk ${st.id}">${p.nick}</span>`:p.vip?`<span class="vn">${p.nick}</span>`:p.nick;return '<span class="nn">'+n+'</span>'+(isOn(p)?'<span class="dot"></span>':'')+(p.vip?'<span class="vb">👑 VIP</span>':"")};
 const shop=p=>`<div class="h2">Стили ника</div><div class="nsgrid">${NS.map(st=>{const owned=(p.own||[]).includes(st.id),on=p.ns===st.id,lock=st.vip&&!p.vip;return `<div class="nsc${on?" on":""}${lock&&!owned?" lock":""}"><div class="nsp"><span class="nk ${st.id}">${p.nick}</span></div><small>${st.name}${st.vip?" · VIP":""}</small>${on?'<button class="btn" data-nsoff="1">Снять</button>':owned?`<button class="btn u" data-nsuse="${st.id}">Надеть</button>`:`<button class="btn g" data-nsbuy="${st.id}">${lock?"🔒 ":""}${st.p} ⭐</button>`}</div>`}).join("")}</div>`;
 const vipBox=()=>`<div class="vipbox"><div><b>👑 VIP-статус</b><span>Золотой переливающийся ник с короной у всех: в топе, поиске и профиле</span></div><button class="btn g" data-vip="1">Купить за ${VIPP} ⭐</button></div>`;
@@ -441,7 +441,7 @@ function show(t){document.querySelectorAll("nav button,.tab").forEach(e=>e.class
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{if(!busy)show(b.dataset.t)});
 $("gear").onclick=()=>{if(!busy&&S){drawSet();show("g")}};
 function drawSet(){drawNick();$("setinfo").innerHTML=av(S.nick,S.vip)+`<h2>${nm(S)}</h2><div style="color:var(--mut)">Всего: ${total(S)} ⭐</div>`;
-  $("ownset").innerHTML=isOwner()?`<div class="vipbox" style="text-align:left"><b>🛠 Панель владельца</b><span>Сайт сейчас: ${S.siteClosed?"🔒 закрыт (технические работы)":"🟢 открыт"}</span><button class="btn ${S.siteClosed?"u":"g"}" data-site="1">${S.siteClosed?"🔓 Открыть сайт":"🔒 Закрыть сайт"}</button><button class="btn" data-logs="1">📜 Логи</button></div>`:""}
+  $("ownset").innerHTML=isOwner()?`<div class="vipbox" style="text-align:left"><b>🛠 Панель владельца</b><span>Сайт сейчас: ${SITE_CLOSED?"🔒 закрыт (технические работы)":"🟢 открыт"}</span><button class="btn ${SITE_CLOSED?"u":"g"}" data-site="1">${SITE_CLOSED?"🔓 Открыть сайт":"🔒 Закрыть сайт"}</button><button class="btn" data-logs="1">📜 Логи</button></div>`:""}
 function drawNick(){$("nickset").innerHTML=`<div class="chn"><div class="h2" style="margin-top:8px">Сменить ник</div><input id="nnick" maxlength="16" placeholder="Новый ник" autocomplete="off"><input id="npass" type="password" maxlength="40" placeholder="Пароль для подтверждения" autocomplete="current-password"><div class="err" id="nerr"></div><button class="btn u" id="nbtn">Сменить ник</button></div>`;$("nbtn").onclick=changeNick}
 async function changeNick(){
   const nick=$("nnick").value.trim(),nl=nick.toLowerCase(),pw=$("npass").value,e=$("nerr"),btn=$("nbtn");e.style.color="";e.textContent="";
@@ -468,7 +468,8 @@ async function changeNick(){
 }
 $("logout").onclick=()=>{if(busy)return;selA=[];selB=null;$("nick").value="";$("pass").value="";beat(false).then(()=>auth.signOut())};
 $("vback").onclick=()=>show("f");
-async function loadAll(){try{const q=await db.collection("players").limit(300).get();ALL=q.docs.map(d=>({id:d.id,...d.data()}))}catch(e){}return ALL}
+let allT=0;
+async function loadAll(force){if(!force&&ALL.length&&Date.now()-allT<120000)return ALL;try{allT=Date.now();const q=await db.collection("players").limit(300).get();ALL=q.docs.map(d=>({id:d.id,...d.data()}))}catch(e){}return ALL}
 const prow=(p,i)=>`<div class="pod ${i<3?"g"+(i+1):""}${p.vip&&!p.banned?" vip":""}${p.banned?" ban":""}" data-v="${p.id}"><div class="m">${["🥇","🥈","🥉"][i]||""}</div><div class="nm"><b>${nm(p)}</b><span>${p.id===uid?"это ты":"открыть профиль"}</span></div><div class="tt">${total(p)} ⭐<small>${p.bal} ⭐ + подарки ${gifts(p)}</small></div></div>`;
 async function loadTop(){$("top").innerHTML='<div class="empty">Загрузка…</div>';await loadAll();const a=ALL.filter(p=>p.nick).sort((x,y)=>total(y)-total(x)).slice(0,3);$("top").innerHTML=a.length?a.map(prow).join(""):'<div class="empty">Пока никого</div>'}
 const prof0=(p,own,mid)=>`<div class="pf">${av(p.nick,p.vip&&!p.banned)}<h2>${nm(p)}</h2></div>${p.banned?banBox(p):""}${own?(p.vip?'<div class="vipbox on">✨ У тебя активен VIP-статус</div>':vipBox()):""}<div class="stats"><div><b>${total(p)}</b>всего ⭐</div><div><b>${p.bal}</b>на балансе</div><div><b>${gifts(p)}</b>подарки (${(p.inv||[]).length})</div></div>${mid||""}<div class="grid">${(p.inv||[]).length?(p.inv||[]).slice().reverse().map(o=>`<div>${cardI(o,"",!own?`data-gift="${o.uid}"`:"")}${own?`<div class="row"><button class="btn g" data-sell="${o.uid}">Продать</button></div>`:""}${isOwner()?`<div class="row"><button class="btn r" data-del="${o.uid}" data-ot="${p.id||uid}">🗑 Удалить</button></div>`:""}</div>`).join(""):'<div class="empty" style="grid-column:1/-1">Подарков пока нет</div>'}</div>`;
@@ -509,7 +510,7 @@ document.addEventListener("click",e=>{
   const om=e.target.closest("[data-omute]");if(om){const on=om.dataset.omute==="1";ownerUpd(om.dataset.ot,{muted:on},on?"Игрок в муте 🔇":"Мут снят 🔊");return}
   const oa=e.target.closest("[data-odelacc]");if(oa){if(oa.dataset.arm){ownerDelAcc(oa.dataset.ot)}else{oa.dataset.arm="1";oa.textContent="Точно удалить? Нажми ещё раз";setTimeout(()=>{delete oa.dataset.arm;oa.textContent="🗑 Удалить аккаунт"},3000)}return}
   const sg=e.target.closest("[data-sendgift]");if(sg&&!busy){openGift();return}
-  const sb=e.target.closest("[data-site]");if(sb&&isOwner()){S.siteClosed=!S.siteClosed;save();drawSet();toast(S.siteClosed?"Сайт закрыт 🔒":"Сайт открыт 🔓","ok");return}
+  const sb=e.target.closest("[data-site]");if(sb&&isOwner()){const nv=!SITE_CLOSED;db.collection("config").doc("site").set({closed:nv}).then(()=>toast(nv?"Сайт закрыт 🔒":"Сайт открыт 🔓","ok")).catch(x=>toast("Ошибка: "+x.message));return}
   const od=e.target.closest("[data-del]");if(od){if(od.dataset.arm){ownerGive(od.dataset.ot,0,null,0,{del:+od.dataset.del,msg:"Подарок удалён 🗑"})}else{od.dataset.arm="1";od.textContent="Точно? Нажми ещё раз";setTimeout(()=>{delete od.dataset.arm;od.textContent="🗑 Удалить"},3000)}return}
   const os=e.target.closest("[data-ost]");if(os){ownerStars(os);return}
   const og=e.target.closest("[data-ogf]");if(og){ownerGift(og);return}
@@ -648,7 +649,7 @@ async function ownerGive(tid,stars,gid,sn,ex){
       if(ex&&ex.del!=null)up.inv=inv.filter(o=>o.uid!==ex.del);
       if(ex&&ex.vip!==undefined){up.vip=ex.vip;if(!ex.vip&&d.ns==="blood")up.ns=null}
       tx.update(r,up)});
-    toast((ex&&ex.msg)||"Выдано ✅","ok");await loadAll();
+    toast((ex&&ex.msg)||"Выдано ✅","ok");await loadAll(true);
     if(tid!==uid&&vid===tid){const p=ALL.find(x=>x.id===tid);if(p)$("other").innerHTML=prof(p,false,ovHead(p))+ownerPanel(p)}
   }catch(e){toast("Ошибка: "+e.message)}
 }
@@ -672,10 +673,8 @@ function badge(){const set=new Set();pendIn().forEach(t=>set.add(t.from));CH.for
 const onC=()=>$("t-c").classList.contains("on");
 function stopLive(){unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];if(unsubMsg)unsubMsg();unsubMsg=null;liveOn=false;clearInterval(presT);clearInterval(chT);CH=[];TR={};MSGS=[];curChat=null;NT={};chInit=false;badge()}
 function startLive(){
-  if(liveOn)return;liveOn=true;const er=e=>console.warn(e.message);beat(!document.hidden);clearInterval(presT);presT=setInterval(()=>{if(!document.hidden)beat(true)},60000);clearInterval(chT);chT=setInterval(()=>{if(curChat&&onC()&&!document.hidden)refreshP(curChat.other).then(()=>{if(curChat)drawView()})},30000);
-  const cl={a:false,b:false};const updCl=()=>{SITE_CLOSED=cl.a||cl.b;applyClosed()};
-  unsubs.push(db.collection("players").where("owner","==",true).onSnapshot(s=>{cl.a=s.docs.some(d=>d.data().siteClosed===true);updCl()},er));
-  unsubs.push(db.collection("players").where("ovner","==",true).onSnapshot(s=>{cl.b=s.docs.some(d=>d.data().siteClosed===true);updCl()},er));
+  if(liveOn)return;liveOn=true;const er=e=>console.warn(e.message);beat(!document.hidden);clearInterval(presT);presT=setInterval(()=>{if(!document.hidden)beat(true)},180000);clearInterval(chT);chT=setInterval(()=>{if(curChat&&onC()&&!document.hidden)refreshP(curChat.other).then(()=>{if(curChat)drawView()})},60000);
+  unsubs.push(db.collection("config").doc("site").onSnapshot(sn=>{SITE_CLOSED=!!(sn.exists&&sn.data().closed===true);applyClosed();if(S&&$("t-g").classList.contains("on"))drawSet()},er));
   unsubs.push(ref.onSnapshot(snap=>{
     if(!snap.exists){if(S&&!snap.metadata.fromCache){S=null;stopLive();applyBan();applyClosed();showLogin("Твой аккаунт был удалён. Зарегистрируйся заново")}return}
     if(snap.metadata.hasPendingWrites||!S)return;const d=snap.data();syncFlags(d);
@@ -776,7 +775,7 @@ async function openChat(o){
   if(!ALL.find(x=>x.id===o))await loadAll();await refreshP(o);const p=ALL.find(x=>x.id===o);if(!p||o===uid)return;
   try{await db.collection("chats").doc(chatId(o)).set({users:[uid,o],names:{[uid]:S.nick,[o]:p.nick}},{merge:true})}catch(e){toast("Не удалось открыть чат");return}
   if(unsubMsg)unsubMsg();MSGS=[];curChat={id:chatId(o),other:o};markRead(curChat.id);badge();
-  unsubMsg=db.collection("chats").doc(curChat.id).collection("msgs").orderBy("t").limitToLast(100).onSnapshot(s=>{MSGS=s.docs.map(d=>({id:d.id,...d.data()}));if(curChat)drawView(true)},e=>console.warn(e.message));
+  unsubMsg=db.collection("chats").doc(curChat.id).collection("msgs").orderBy("t").limitToLast(40).onSnapshot(s=>{MSGS=s.docs.map(d=>({id:d.id,...d.data()}));if(curChat)drawView(true)},e=>console.warn(e.message));
   show("c")}
 $("cback").onclick=()=>{if(unsubMsg)unsubMsg();unsubMsg=null;if(curChat)markRead(curChat.id);curChat=null;badge();showChats()};
 function tradeCard(m){
@@ -806,7 +805,7 @@ function syncFlags(d){const b=!!d.banned,r=d.banReason||"",m=!!d.muted;const ch=
 async function refreshP(id){try{const sn=await db.collection("players").doc(id).get();if(sn.exists){const v={id,...sn.data()},i=ALL.findIndex(x=>x.id===id);if(i>=0)ALL[i]=v;else ALL.push(v)}}catch(e){}}
 function refreshV(tid){if(tid!==uid&&vid===tid){const p=ALL.find(x=>x.id===tid);if(p)$("other").innerHTML=prof(p,false,ovHead(p))+ownerPanel(p)}}
 async function ownerUpd(tid,up,msg){
-  try{await db.collection("players").doc(tid).update({...up,t:Date.now()});toast(msg||"Готово ✅","ok");await loadAll();refreshV(tid)}
+  try{await db.collection("players").doc(tid).update({...up,t:Date.now()});toast(msg||"Готово ✅","ok");await loadAll(true);refreshV(tid)}
   catch(e){toast("Ошибка: "+e.message)}
 }
 async function ownerDelAcc(tid){
@@ -831,7 +830,7 @@ let LOGS=[],logF="all";
 const fD=ts=>{const d=new Date(ts),p=n=>String(n).padStart(2,"0");return p(d.getDate())+"."+p(d.getMonth()+1)+" "+p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds())};
 async function openLogs(){
   const box=$("logbox");box.innerHTML='<div class="empty">Загрузка…</div>';
-  try{const q=await db.collection("logs").orderBy("t","desc").limit(300).get();LOGS=q.docs.map(d=>d.data());drawLogs()}
+  try{const q=await db.collection("logs").orderBy("t","desc").limit(100).get();LOGS=q.docs.map(d=>d.data());drawLogs()}
   catch(e){box.innerHTML='<div class="empty">Ошибка: '+esc(e.message)+'<br>Проверь правила Firebase для logs</div>'}}
 const LCATS=[["msg","💬 Сообщения"],["gift","🎁 Подарки"],["trade","🤝 Сделки"],["roul","🎰 Рулетка"],["upg","⬆️ Апгрейд"],["shop","🛍 Магазин"]];
 let lcSel=new Set();
