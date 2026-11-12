@@ -339,7 +339,7 @@ select{width:100%;padding:12px;border-radius:12px;border:1px solid #333a4d;backg
 .bioc{text-align:right;font-size:12px;color:var(--mut);margin-top:4px}
 
 /* --- настоящие Lottie-анимации подарков (как в Telegram) --- */
-.em .lt{position:absolute;inset:3%;pointer-events:none}
+.em .lt{position:absolute;inset:3%;pointer-events:none;contain:layout paint style;will-change:transform;transform:translateZ(0)}
 .em .lt svg{width:100%!important;height:100%!important;display:block}
 .em img,.em>span{transition:opacity .4s}
 .em.lo img,.em.lo>span{opacity:0}
@@ -452,7 +452,7 @@ const frm=ins=>{if(!ins||!(ins.fn||ins.fid))return"";const pl=ins.fid?ALL.find(x
 // ===== Настоящие анимации подарков: Lottie с nft.fragment.com =====
 const gNo=(it,ins)=>ins&&ins.sn&&!ins.dv?((ins.sn-1)%it.rg)+1:it.dn;
 const HC=navigator.hardwareConcurrency||4,LOW=HC<=4||(navigator.deviceMemory||4)<=2;
-const LOT={txt:{},pend:{},bad:{},bdc:{},act:new Set(),vis:new Set(),q:[],pool:[],busy:0,MAXQ:2,MAXP:LOW?3:HC>=8?12:8,FPS:LOW?20:30,gm:1,sc:0,raf:0};
+const LOT={txt:{},pend:{},bad:{},bdc:{},act:new Set(),vis:new Set(),q:[],bq:[],bb:0,pool:[],busy:0,MAXQ:2,MAXP:LOW?3:HC>=8?12:8,raf:0,sc:0,bt:0,lt:0,tn:0,ps:0,rb:1,mn:16.7,mnw:1e9,wn:0,L:1,up:0,dn:0,jk:0,ue:0,na:0};
 try{const j=JSON.parse(LS("bdc1")||"{}");if(j&&typeof j==="object")LOT.bdc=j}catch(e){}
 let bdT;const bdSave=()=>{clearTimeout(bdT);bdT=setTimeout(()=>{try{const k=Object.keys(LOT.bdc);if(k.length>500)k.slice(0,k.length-500).forEach(x=>delete LOT.bdc[x]);LS("bdc1",JSON.stringify(LOT.bdc))}catch(e){}},1500)};
 const hx=n=>"#"+n.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,"0")).join("");
@@ -470,38 +470,59 @@ function lotApply(el,bd,adopt){const sk=el.closest(".sk");if(bd&&sk){sk.style.se
   const gf=el.parentElement;if(gf&&!gf.querySelector(".pat")){const pt=document.createElement("div");pt.className="pat"+(adopt?"":" pa");pt.textContent=(el.dataset.sym||"").repeat(22);gf.insertBefore(pt,el)}}
 function lotKill(el){if(el._lt){try{el._lt.destroy()}catch(e){}}if(el._box)el._box.remove();el._lt=el._box=el._d=null;el._rd=0;el.classList.remove("lo","lo0");LOT.act.delete(el)}
 /* при перерисовке списка готовая анимация переезжает в новую карточку: без перезагрузки и мигания */
-function lotAdopt(el){const u=el.dataset.lot,i=LOT.pool.findIndex(p=>p.u===u);if(i<0)return false;const p=LOT.pool.splice(i,1)[0];el.appendChild(p.box);el._lt=p.a;el._box=p.box;el._d=p.d;el._t0=p.t0;el._rd=1;el._lf=0;el._iv=1000/LOT.FPS;el._cs=0;LOT.act.add(el);lotApply(el,LOT.bdc[(el.dataset.img||"").replace(GB,"")],true);return true}
-function lotRelease(el){if(el._lt&&el._rd){LOT.act.delete(el);LOT.pool.push({u:el.dataset.lot,box:el._box,a:el._lt,d:el._d,t0:el._t0});el._lt=el._box=el._d=null;el._rd=0;while(LOT.pool.length>16){const p=LOT.pool.shift();try{p.a.destroy()}catch(e){}p.box.remove()}}else if(el._lt)lotKill(el);LOT.vis.delete(el);el._on=false;if(lotIO)lotIO.unobserve(el)}
+function lotAdopt(el){const u=el.dataset.lot,i=LOT.pool.findIndex(p=>p.u===u);if(i<0)return false;const p=LOT.pool.splice(i,1)[0];el.appendChild(p.box);el._lt=p.a;el._box=p.box;el._d=p.d;el._t0=p.t0;el._rd=1;el._ph=LOT.ps++;LOT.act.add(el);lotApply(el,LOT.bdc[(el.dataset.img||"").replace(GB,"")],true);return true}
+function lotRelease(el){if(el._lt&&el._rd){LOT.act.delete(el);LOT.pool.push({u:el.dataset.lot,box:el._box,a:el._lt,d:el._d,t0:el._t0});el._lt=el._box=el._d=null;el._rd=0;while(LOT.pool.length>16){const p=LOT.pool.shift();try{p.a.destroy()}catch(e){}p.box.remove()}}else if(el._lt)lotKill(el);LOT.vis.delete(el);el._on=false;if(lotIO){lotIO.unobserve(el);lotIO2.unobserve(el)}el._seen=false}
 function lotPump(){while(LOT.busy<LOT.MAXQ&&LOT.q.length){const el=LOT.q.shift(),u=el.dataset.lot;if(!u||!el.isConnected||!el._on||el._lt||el._lp||LOT.bad[u])continue;el._lp=1;LOT.busy++;
-  Promise.all([lotFetch(u),bdSample(el.dataset.img||"")]).then(([t,bd])=>{
-    if(!el.isConnected||el.dataset.lot!==u||el._lt)return;
-    let d;try{d=JSON.parse(t)}catch(e){LOT.bad[u]=1;return}
-    const box=document.createElement("div");box.className="lt";el.appendChild(box);
-    const a=lottie.loadAnimation({container:box,renderer:"svg",loop:false,autoplay:false,animationData:d,rendererSettings:{preserveAspectRatio:"xMidYMid meet"}});
-    try{a.setSubframe(false)}catch(e){}
-    el._lt=a;el._box=box;el._d=d;el._t0=performance.now()-Math.random()*800;el._lf=0;el._iv=1000/LOT.FPS;el._cs=0;
-    const ready=()=>{if(el._rd||el._lt!==a)return;el._rd=1;try{a.goToAndStop(0,true)}catch(e){}requestAnimationFrame(()=>{if(el._lt===a)lotApply(el,bd,false)});LOT.act.add(el);lotLoop()};
-    if(a.isLoaded)ready();else{a.addEventListener("DOMLoaded",ready);setTimeout(ready,600)}
-  }).catch(()=>{}).finally(()=>{el._lp=0;LOT.busy--;setTimeout(lotPump,30)})}}
-/* один общий таймер вместо отдельного цикла у каждой анимации; частота кадров подстраивается под нагрузку */
-function lotLoop(){if(LOT.raf||document.hidden)return;for(const el of LOT.act)if(el._on&&el._rd){LOT.raf=requestAnimationFrame(lotTick);return}}
+  Promise.all([lotFetch(u),bdSample(el.dataset.img||"")]).then(([t,bd])=>{LOT.bq.push([el,u,t,bd]);lotBuildSoon()}).catch(()=>{el._lp=0}).finally(()=>{LOT.busy--;setTimeout(lotPump,30)})}}
+/* создание анимации (парсинг JSON + построение SVG) тяжёлое: делаем по одной штуке в простое браузера, не во время скролла и не в кадре отрисовки */
+function lotBuildSoon(){if(LOT.bb||!LOT.bq.length)return;LOT.bb=1;
+  const go=()=>{if(performance.now()-LOT.sc<220){setTimeout(go,120);return}lotBuild()};
+  if(window.requestIdleCallback)requestIdleCallback(go,{timeout:300});else setTimeout(go,40)}
+function lotBuild(){LOT.bb=0;const j=LOT.bq.shift();if(!j)return;const[el,u,t,bd]=j;
+  try{if(el.isConnected&&el.dataset.lot===u&&!el._lt&&el._on){
+    let d;try{d=JSON.parse(t)}catch(e){LOT.bad[u]=1;d=null}
+    if(d){const box=document.createElement("div");box.className="lt";el.appendChild(box);
+      const a=lottie.loadAnimation({container:box,renderer:"svg",loop:false,autoplay:false,animationData:d,rendererSettings:{preserveAspectRatio:"xMidYMid meet",progressiveLoad:false,hideOnTransparent:true}});
+      try{a.setSubframe(true)}catch(e){}
+      el._lt=a;el._box=box;el._d=d;el._t0=performance.now()-Math.random()*800;el._ph=LOT.ps++;
+      const ready=()=>{if(el._rd||el._lt!==a)return;el._rd=1;try{a.goToAndStop(0,true)}catch(e){}requestAnimationFrame(()=>{if(el._lt===a)lotApply(el,bd,false)});LOT.act.add(el);LOT.bt=performance.now();lotLoop()};
+      if(a.isLoaded)ready();else{a.addEventListener("DOMLoaded",ready);setTimeout(ready,600)}}}
+  }catch(e){}
+  el._lp=0;LOT.bt=performance.now();if(LOT.bq.length)lotBuildSoon()}
+/* один общий rAF-цикл на все анимации.
+   Время — по реальным часам (дробные кадры, subframe), поэтому скорость всегда правильная.
+   Ровность: вместо сравнения «прошло ли N мс» (из-за чего кадры то 2, то 3 тика подряд) используем целочисленный счётчик тиков
+   и фиксированные фазы у карточек: каждая обновляется строго раз в D тиков, нагрузка размазана по кадрам.
+   D = (кратность частоты экрана) × (уровень нагрузки 1–4), уровень сам подстраивается по реальной стоимости и пропущенным кадрам. */
+function lotLoop(){if(LOT.raf||document.hidden)return;for(const el of LOT.act)if(el._on&&el._rd&&el._seen){LOT.raf=requestAnimationFrame(lotTick);return}}
 function lotTick(now){LOT.raf=0;
-  if(now-LOT.sc>140){const T0=performance.now(),base=1000/LOT.FPS;
-    for(const el of LOT.act){if(!el._on||!el._rd||!el.isConnected)continue;if(now-el._lf<el._iv)continue;el._lf=now;
-      const d=el._d,tot=(d.op-d.ip)||1,f=((now-el._t0)/1000*(d.fr||30))%tot,t0=performance.now();
-      try{el._lt.goToAndStop(Math.floor(f),true)}catch(e){}
-      const c=performance.now()-t0;el._cs=el._cs?el._cs*.7+c*.3:c;
-      el._iv=Math.max(base,el._cs<4?0:el._cs<9?50:el._cs<16?83:125)}
-    const tc=performance.now()-T0;LOT.gm=tc>14?Math.min(3,LOT.gm+.25):Math.max(1,LOT.gm-.05);
-    for(const el of LOT.act)if(el._iv)el._iv=Math.max(el._iv,base*LOT.gm)}
-  lotLoop()}
+  const dt=LOT.lt?now-LOT.lt:0;LOT.lt=now;
+  /* определяем частоту экрана (60/90/120/144 Гц) по минимальному интервалу между кадрами: цель — 60 к/с, а не 120 */
+  if(dt>3&&dt<120){if(dt<LOT.mnw)LOT.mnw=dt;if(++LOT.wn>=60){if(LOT.mnw<40){LOT.mn=LOT.mnw;LOT.rb=Math.max(1,Math.floor(1000/LOT.mnw/60+.2))}LOT.mnw=1e9;LOT.wn=0}}
+  const scr=now-LOT.sc<180;
+  if(dt>LOT.mn*1.7&&dt<250&&now-LOT.bt>150&&!scr)LOT.jk++;else LOT.jk=Math.max(0,LOT.jk-.03);
+  const D=Math.min(LOT.rb*6,LOT.rb*LOT.L*(scr?2:1));
+  let n=0,na=0;const t0=performance.now();
+  for(const el of LOT.act){if(!el._on||!el._rd||!el._seen||!el.isConnected)continue;na++;
+    if((LOT.tn+el._ph)%D)continue;
+    const d=el._d,tot=(d.op-d.ip)||1;let f=(now-el._t0)/1000*(d.fr||30);f=f<0?0:f%tot;
+    try{el._lt.goToAndStop(f,true)}catch(e){}n++}
+  LOT.na=na;
+  if(n){const u=(performance.now()-t0)/n;LOT.ue=LOT.ue?LOT.ue*.88+u*.12:u}
+  /* регулятор нагрузки с гистерезисом: быстро снижаем частоту при перегрузе, медленно возвращаем */
+  const need=na*LOT.ue/7;
+  if(need>LOT.L*.95||LOT.jk>=4){if(++LOT.up>=6||LOT.jk>=4){LOT.L=Math.min(4,Math.max(LOT.L+1,Math.ceil(need)));LOT.up=0;LOT.dn=0;LOT.jk=0}}
+  else{LOT.up=0;if(LOT.L>1&&need<(LOT.L-1)*.75){if(++LOT.dn>=180){LOT.L--;LOT.dn=0}}else LOT.dn=0}
+  LOT.tn++;lotLoop()}
 /* играют только ближайшие к центру экрана карточки, остальные остаются картинкой */
 let selT=0;const lotSelSoon=()=>{if(selT)return;selT=setTimeout(()=>{selT=0;lotSelect()},60)};
 function lotSelect(){const cy=innerHeight/2,arr=[];LOT.vis.forEach(e=>{if(!e.isConnected){LOT.vis.delete(e);return}const r=e.getBoundingClientRect();arr.push([Math.abs(r.top+r.height/2-cy),e])});arr.sort((x,y)=>x[0]-y[0]);
   arr.forEach(([_,e],i)=>{const on=i<LOT.MAXP;e._on=on;if(on&&e.dataset.lot&&!e._lt&&!e._lp&&!LOT.bad[e.dataset.lot]&&!LOT.q.includes(e))LOT.q.push(e)});lotPump();lotLoop()}
-const lotIO=("IntersectionObserver"in window)?new IntersectionObserver(es=>{es.forEach(e=>{const el=e.target;if(e.isIntersecting)LOT.vis.add(el);else{LOT.vis.delete(el);el._on=false;const i=LOT.q.indexOf(el);if(i>=0)LOT.q.splice(i,1)}});lotSelSoon()},{rootMargin:"60px"}):null;
+const lotIO=("IntersectionObserver"in window)?new IntersectionObserver(es=>{es.forEach(e=>{const el=e.target;if(e.isIntersecting)LOT.vis.add(el);else{LOT.vis.delete(el);el._on=false;const i=LOT.q.indexOf(el);if(i>=0)LOT.q.splice(i,1)}});lotSelSoon()},{rootMargin:"160px"}):null;
+/* играет только то, что реально в видимой области экрана (без запаса) */
+const lotIO2=lotIO?new IntersectionObserver(es=>{es.forEach(e=>{e.target._seen=e.isIntersecting});lotLoop()},{rootMargin:"0px"}):null;
 const lotEms=n=>{if(n.nodeType!==1)return[];const L=n.matches&&n.matches(".em[data-lot]")?[n]:[];n.querySelectorAll&&n.querySelectorAll(".em[data-lot]").forEach(x=>L.push(x));return L};
-function lotScan(n){lotEms(n).forEach(el=>{if(el._lo||el.closest(".strip"))return;el._lo=1;if(!el._lt)lotAdopt(el);lotIO.observe(el)})}
+function lotScan(n){lotEms(n).forEach(el=>{if(el._lo||el.closest(".strip"))return;el._lo=1;if(!el._lt)lotAdopt(el);lotIO.observe(el);lotIO2.observe(el)})}
 function lotDrop(n){lotEms(n).forEach(el=>{if(el.isConnected)return;lotRelease(el);el._lo=0})}
 if(lotIO&&window.lottie&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)){
   new MutationObserver(ms=>{const rm=[],ad=[];ms.forEach(m=>{m.removedNodes.forEach(n=>rm.push(n));m.addedNodes.forEach(n=>ad.push(n))});rm.forEach(lotDrop);ad.forEach(lotScan)}).observe(document.body,{childList:true,subtree:true});lotScan(document.body);
