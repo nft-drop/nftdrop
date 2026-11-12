@@ -343,6 +343,7 @@ select{width:100%;padding:12px;border-radius:12px;border:1px solid #333a4d;backg
 .em .lt svg{width:100%!important;height:100%!important;display:block}
 .em img,.em>span{transition:opacity .4s}
 .em.lo img,.em.lo>span{opacity:0}
+.em.lo0 img,.em.lo0>span{transition:none}
 .gf>.pat.pa{animation:fi .6s both}
 </style>
 </head>
@@ -429,41 +430,89 @@ const IMG={
 "Neko Helmet":"https://nft.fragment.com/gift/nekohelmet-1.webp",
 "Sakura Flower":"https://nft.fragment.com/gift/sakuraflower-1.webp",
 "Diamond Ring":"https://nft.fragment.com/gift/diamondring-1.webp",
-"Ginger Cookie":"https://nft.fragment.com/gift/gingercookie-1.webp"
+"Ginger Cookie":"https://nft.fragment.com/gift/gingercookie-1.webp",
+"Resistance Dog":"https://nft.fragment.com/gift/resistancedog-1.webp",
+"UFC Strike":"https://nft.fragment.com/gift/ufcstrike-1.webp",
+"Snoop Cigar":"https://nft.fragment.com/gift/snoopcigar-1.webp",
+"Khabib's Papakha":"https://nft.fragment.com/gift/khabibspapakha-1.webp"
 };
-const ITEMS=[["Spiced Wine","🍷","🌶️",25],["Hex Pot","🍲","✨",40],["Spy Agaric","🍄","🔴",60],["Evil Eye","🧿","👁️",90],["Scared Cat","🙀","🐾",130],["Jelly Bunny","🐰","🍬",180],["Skull Flower","💀","🌸",260],["Kissed Frog","🐸","💋",380],["Toy Bear","🧸","⭐",600],["Swiss Watch","⌚","💎",950],["Heart Locket","💝","💗",1500],["Precious Peach","🍑","🌿",2600],["Durov's Cap","🧢","✈️",20000],["Plush Pepe","🐸","👑",60000],["Vintage Cigar","🚬","🔥",3000],["Perfume Bottle","🧴","🌸",3400],["Magic Potion","🧪","✨",3900],["Sharp Tongue","👅","💥",4400],["Homemade Cake","🍰","🍓",5000],["Signet Ring","💍","🔷",5700],["Eternal Rose","🌹","🥀",6500],["Loot Bag","🎒","🪙",7500],["Bonded Ring","💞","💍",8700],["Gem Signet","💠","💎",10000],["Crystal Ball","🔮","🌙",11500],["Neko Helmet","🐱","⛑️",12500],["Sakura Flower","🌸","🌺",13500],["Diamond Ring","💎","💍",15000],["Ginger Cookie","🍪","🎄",2000]].map((a,i)=>({id:i,n:a[0],e:a[1],s:a[2],p:a[3],img:IMG[a[0]],lot:IMG[a[0]]&&IMG[a[0]].replace(/\.webp$/,".lottie.json"),c:col(a[3]),w:Math.pow(a[3],-1.2)*(a[3]>=20000?4:1)}));
+const GB="https://nft.fragment.com/gift/";
+/* сколько номеров NFT (моделей/фонов) безопасно выпадает у подарка: номера 1..N точно существуют */
+const RG={"Spiced Wine":9000,"Spy Agaric":25000,"Skull Flower":7000,"Toy Bear":27000,"Swiss Watch":8000,"Heart Locket":400,"Precious Peach":1000,"Durov's Cap":600,"Plush Pepe":2000,"Vintage Cigar":6500,"Sharp Tongue":3800,"Signet Ring":7000,"Snoop Cigar":9000,"UFC Strike":2500,"Khabib's Papakha":3000,"Resistance Dog":800};
+const ITEMS=[["Spiced Wine","🍷","🌶️",25],["Hex Pot","🍲","✨",40],["Spy Agaric","🍄","🔴",60],["Evil Eye","🧿","👁️",90],["Scared Cat","🙀","🐾",130],["Jelly Bunny","🐰","🍬",180],["Skull Flower","💀","🌸",260],["Kissed Frog","🐸","💋",380],["Toy Bear","🧸","⭐",600],["Swiss Watch","⌚","💎",950],["Heart Locket","💝","💗",1500],["Precious Peach","🍑","🌿",2600],["Durov's Cap","🧢","✈️",20000],["Plush Pepe","🐸","👑",60000],["Vintage Cigar","🚬","🔥",3000],["Perfume Bottle","🧴","🌸",3400],["Magic Potion","🧪","✨",3900],["Sharp Tongue","👅","💥",4400],["Homemade Cake","🍰","🍓",5000],["Signet Ring","💍","🔷",5700],["Eternal Rose","🌹","🥀",6500],["Loot Bag","🎒","🪙",7500],["Bonded Ring","💞","💍",8700],["Gem Signet","💠","💎",10000],["Crystal Ball","🔮","🌙",11500],["Neko Helmet","🐱","⛑️",12500],["Sakura Flower","🌸","🌺",13500],["Diamond Ring","💎","💍",15000],["Ginger Cookie","🍪","🎄",2000],["Resistance Dog","🐕","✊",1200],["UFC Strike","🥊","🥋",2200],["Snoop Cigar","🚬","💨",3200],["Khabib's Papakha","🎩","⛰️",4800]].map((a,i)=>({id:i,n:a[0],e:a[1],s:a[2],p:a[3],img:IMG[a[0]],lot:IMG[a[0]]&&IMG[a[0]].replace(/\.webp$/,".lottie.json"),slug:(IMG[a[0]].match(/gift\/([a-z]+)-/)||[])[1],dn:+(IMG[a[0]].match(/-(\d+)\.webp/)||[])[1]||1,rg:RG[a[0]]||1000,c:col(a[3]),w:Math.pow(a[3],-1.2)*(a[3]>=20000?4:1)}));
 Object.values(IMG).forEach(u=>{const i=new Image();i.src=u});
 const VIPP=3000;
 const CASE=100,SUMW=ITEMS.reduce((s,x)=>s+x.w,0),pc=x=>(x.w/SUMW*100).toFixed(2)+"%",rnd=n=>Math.floor(Math.random()*n);
 let db,uid,ref,S=null,ALL=[],busy=false,selA=[],selB=null,M=1,vid=null,upStars=0;
 const LS=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}};
-const inst=(it)=>({id:it.id,sn:1+rnd(9999),bd:rnd(8)});
+const inst=(it)=>({id:it.id,sn:1+rnd(it.rg),bd:rnd(8)});
 const esc0=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const frm=ins=>{if(!ins||!(ins.fn||ins.fid))return"";const pl=ins.fid?ALL.find(x=>x.id===ins.fid):null,nick=(pl&&pl.nick)||ins.fn;if(!nick)return"";const sty=pl?pl.ns:ins.fs,n=esc0(nick),ok=NS.some(x=>x.id===sty);return `<div class="frm"><span class="fa" style="background:hsl(${hue(nick)} 60% 45%)">${esc0(nick[0].toUpperCase())}</span><span class="fn">${ok?`<span class="nk ${sty}">${n}</span>`:n}</span></div>`};
 
-// ===== Настоящие анимации подарков: Lottie с nft.fragment.com (тот же файл, что играет Telegram) =====
-const LOT={txt:{},pend:{},bad:{},act:new Set(),q:[],busy:0,MAX:2};
+// ===== Настоящие анимации подарков: Lottie с nft.fragment.com =====
+const gNo=(it,ins)=>ins&&ins.sn&&!ins.dv?((ins.sn-1)%it.rg)+1:it.dn;
+const HC=navigator.hardwareConcurrency||4,LOW=HC<=4||(navigator.deviceMemory||4)<=2;
+const LOT={txt:{},pend:{},bad:{},bdc:{},act:new Set(),vis:new Set(),q:[],pool:[],busy:0,MAXQ:2,MAXP:LOW?3:HC>=8?12:8,FPS:LOW?20:30,gm:1,sc:0,raf:0};
+try{const j=JSON.parse(LS("bdc1")||"{}");if(j&&typeof j==="object")LOT.bdc=j}catch(e){}
+let bdT;const bdSave=()=>{clearTimeout(bdT);bdT=setTimeout(()=>{try{const k=Object.keys(LOT.bdc);if(k.length>500)k.slice(0,k.length-500).forEach(x=>delete LOT.bdc[x]);LS("bdc1",JSON.stringify(LOT.bdc))}catch(e){}},1500)};
+const hx=n=>"#"+n.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,"0")).join("");
+/* цвета фона берём прямо из настоящей картинки NFT (края и середина градиента) */
+function bdSample(u){if(!u)return Promise.resolve(null);const k=u.replace(GB,"");if(LOT.bdc[k])return Promise.resolve(LOT.bdc[k]);
+  return new Promise(res=>{const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{try{const c=document.createElement("canvas");c.width=c.height=32;const x=c.getContext("2d",{willReadFrequently:true});x.drawImage(im,0,0,32,32);
+    const g=(px,py)=>{const d=x.getImageData(px,py,2,2).data;let r=0,gg=0,b=0,al=0;for(let i=0;i<16;i+=4){r+=d[i];gg+=d[i+1];b+=d[i+2];al+=d[i+3]}return[r/4,gg/4,b/4,al/4]};
+    const av=a=>[0,1,2].map(j=>a.reduce((s,p)=>s+p[j],0)/a.length),E=[g(0,0),g(30,0),g(0,30),g(30,30)];
+    if(E.some(p=>p[3]<230)){res(null);return}
+    const e=av(E),m=av([g(15,1),g(15,29),g(1,15),g(29,15)]),c0=m.map((v,j)=>v+(v-e[j])*.5),r=[hx(c0),hx(e)];LOT.bdc[k]=r;bdSave();res(r)}catch(err){res(null)}};
+    im.onerror=()=>res(null);im.src=u})}
 const lotFetch=u=>LOT.txt[u]?Promise.resolve(LOT.txt[u]):LOT.pend[u]||(LOT.pend[u]=fetch(u).then(r=>{if(!r.ok)throw new Error(r.status);return r.text()}).then(t=>{if(t.charCodeAt(0)!==123)throw new Error("bad");LOT.txt[u]=t;delete LOT.pend[u];return t}).catch(e=>{delete LOT.pend[u];LOT.bad[u]=1;throw e}));
-function lotPump(){while(LOT.busy<LOT.MAX&&LOT.q.length){const el=LOT.q.shift();el._lp=1;LOT.busy++;
-  lotFetch(el.dataset.lot).then(t=>{if(!el.isConnected||!el._vis)return;
+function lotApply(el,bd,adopt){const sk=el.closest(".sk");if(bd&&sk){sk.style.setProperty("--b1",bd[0]);sk.style.setProperty("--b2",bd[1])}
+  el.classList.add("lo");if(adopt)el.classList.add("lo0");
+  const gf=el.parentElement;if(gf&&!gf.querySelector(".pat")){const pt=document.createElement("div");pt.className="pat"+(adopt?"":" pa");pt.textContent=(el.dataset.sym||"").repeat(22);gf.insertBefore(pt,el)}}
+function lotKill(el){if(el._lt){try{el._lt.destroy()}catch(e){}}if(el._box)el._box.remove();el._lt=el._box=el._d=null;el._rd=0;el.classList.remove("lo","lo0");LOT.act.delete(el)}
+/* при перерисовке списка готовая анимация переезжает в новую карточку: без перезагрузки и мигания */
+function lotAdopt(el){const u=el.dataset.lot,i=LOT.pool.findIndex(p=>p.u===u);if(i<0)return false;const p=LOT.pool.splice(i,1)[0];el.appendChild(p.box);el._lt=p.a;el._box=p.box;el._d=p.d;el._t0=p.t0;el._rd=1;el._lf=0;el._iv=1000/LOT.FPS;el._cs=0;LOT.act.add(el);lotApply(el,LOT.bdc[(el.dataset.img||"").replace(GB,"")],true);return true}
+function lotRelease(el){if(el._lt&&el._rd){LOT.act.delete(el);LOT.pool.push({u:el.dataset.lot,box:el._box,a:el._lt,d:el._d,t0:el._t0});el._lt=el._box=el._d=null;el._rd=0;while(LOT.pool.length>16){const p=LOT.pool.shift();try{p.a.destroy()}catch(e){}p.box.remove()}}else if(el._lt)lotKill(el);LOT.vis.delete(el);el._on=false;if(lotIO)lotIO.unobserve(el)}
+function lotPump(){while(LOT.busy<LOT.MAXQ&&LOT.q.length){const el=LOT.q.shift(),u=el.dataset.lot;if(!u||!el.isConnected||!el._on||el._lt||el._lp||LOT.bad[u])continue;el._lp=1;LOT.busy++;
+  Promise.all([lotFetch(u),bdSample(el.dataset.img||"")]).then(([t,bd])=>{
+    if(!el.isConnected||el.dataset.lot!==u||el._lt)return;
+    let d;try{d=JSON.parse(t)}catch(e){LOT.bad[u]=1;return}
     const box=document.createElement("div");box.className="lt";el.appendChild(box);
-    let d;try{d=JSON.parse(t)}catch(e){box.remove();LOT.bad[el.dataset.lot]=1;return}
-    const a=lottie.loadAnimation({container:box,renderer:"svg",loop:true,autoplay:true,animationData:d,rendererSettings:{preserveAspectRatio:"xMidYMid meet"}});
-    el._lt=a;el._box=box;LOT.act.add(el);
-    a.addEventListener("DOMLoaded",()=>{el.classList.add("lo");const gf=el.parentElement;if(gf&&!gf.querySelector(".pat")){const pt=document.createElement("div");pt.className="pat pa";pt.textContent=(el.dataset.sym||"").repeat(22);gf.insertBefore(pt,el)}});
-    if(!el._vis)a.pause()
-  }).catch(()=>{}).finally(()=>{el._lp=0;LOT.busy--;setTimeout(lotPump,40)})}}
-function lotKill(el){if(el._lt){try{el._lt.destroy()}catch(e){}}if(el._box)el._box.remove();el._lt=el._box=null;el.classList.remove("lo");LOT.act.delete(el)}
-const lotIO=("IntersectionObserver"in window)?new IntersectionObserver(es=>es.forEach(e=>{const el=e.target;el._vis=e.isIntersecting;
-  if(e.isIntersecting){if(el._lt)el._lt.play();else if(!el._lp&&!LOT.bad[el.dataset.lot]&&!LOT.q.includes(el)){LOT.q.push(el);lotPump()}}
-  else{if(el._lt)el._lt.pause();const i=LOT.q.indexOf(el);if(i>=0)LOT.q.splice(i,1)}}),{rootMargin:"120px"}):null;
-function lotScan(n){if(!lotIO||!window.lottie||n.nodeType!==1)return;const L=n.matches&&n.matches(".em[data-lot]")?[n]:[];n.querySelectorAll&&n.querySelectorAll(".em[data-lot]").forEach(x=>L.push(x));
-  L.forEach(el=>{if(el._lo||el.closest(".strip"))return;el._lo=1;lotIO.observe(el)})}
+    const a=lottie.loadAnimation({container:box,renderer:"svg",loop:false,autoplay:false,animationData:d,rendererSettings:{preserveAspectRatio:"xMidYMid meet"}});
+    try{a.setSubframe(false)}catch(e){}
+    el._lt=a;el._box=box;el._d=d;el._t0=performance.now()-Math.random()*800;el._lf=0;el._iv=1000/LOT.FPS;el._cs=0;
+    const ready=()=>{if(el._rd||el._lt!==a)return;el._rd=1;try{a.goToAndStop(0,true)}catch(e){}requestAnimationFrame(()=>{if(el._lt===a)lotApply(el,bd,false)});LOT.act.add(el);lotLoop()};
+    if(a.isLoaded)ready();else{a.addEventListener("DOMLoaded",ready);setTimeout(ready,600)}
+  }).catch(()=>{}).finally(()=>{el._lp=0;LOT.busy--;setTimeout(lotPump,30)})}}
+/* один общий таймер вместо отдельного цикла у каждой анимации; частота кадров подстраивается под нагрузку */
+function lotLoop(){if(LOT.raf||document.hidden)return;for(const el of LOT.act)if(el._on&&el._rd){LOT.raf=requestAnimationFrame(lotTick);return}}
+function lotTick(now){LOT.raf=0;
+  if(now-LOT.sc>140){const T0=performance.now(),base=1000/LOT.FPS;
+    for(const el of LOT.act){if(!el._on||!el._rd||!el.isConnected)continue;if(now-el._lf<el._iv)continue;el._lf=now;
+      const d=el._d,tot=(d.op-d.ip)||1,f=((now-el._t0)/1000*(d.fr||30))%tot,t0=performance.now();
+      try{el._lt.goToAndStop(Math.floor(f),true)}catch(e){}
+      const c=performance.now()-t0;el._cs=el._cs?el._cs*.7+c*.3:c;
+      el._iv=Math.max(base,el._cs<4?0:el._cs<9?50:el._cs<16?83:125)}
+    const tc=performance.now()-T0;LOT.gm=tc>14?Math.min(3,LOT.gm+.25):Math.max(1,LOT.gm-.05);
+    for(const el of LOT.act)if(el._iv)el._iv=Math.max(el._iv,base*LOT.gm)}
+  lotLoop()}
+/* играют только ближайшие к центру экрана карточки, остальные остаются картинкой */
+let selT=0;const lotSelSoon=()=>{if(selT)return;selT=setTimeout(()=>{selT=0;lotSelect()},60)};
+function lotSelect(){const cy=innerHeight/2,arr=[];LOT.vis.forEach(e=>{if(!e.isConnected){LOT.vis.delete(e);return}const r=e.getBoundingClientRect();arr.push([Math.abs(r.top+r.height/2-cy),e])});arr.sort((x,y)=>x[0]-y[0]);
+  arr.forEach(([_,e],i)=>{const on=i<LOT.MAXP;e._on=on;if(on&&e.dataset.lot&&!e._lt&&!e._lp&&!LOT.bad[e.dataset.lot]&&!LOT.q.includes(e))LOT.q.push(e)});lotPump();lotLoop()}
+const lotIO=("IntersectionObserver"in window)?new IntersectionObserver(es=>{es.forEach(e=>{const el=e.target;if(e.isIntersecting)LOT.vis.add(el);else{LOT.vis.delete(el);el._on=false;const i=LOT.q.indexOf(el);if(i>=0)LOT.q.splice(i,1)}});lotSelSoon()},{rootMargin:"60px"}):null;
+const lotEms=n=>{if(n.nodeType!==1)return[];const L=n.matches&&n.matches(".em[data-lot]")?[n]:[];n.querySelectorAll&&n.querySelectorAll(".em[data-lot]").forEach(x=>L.push(x));return L};
+function lotScan(n){lotEms(n).forEach(el=>{if(el._lo||el.closest(".strip"))return;el._lo=1;if(!el._lt)lotAdopt(el);lotIO.observe(el)})}
+function lotDrop(n){lotEms(n).forEach(el=>{if(el.isConnected)return;lotRelease(el);el._lo=0})}
 if(lotIO&&window.lottie&&!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)){
-  new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(lotScan))).observe(document.body,{childList:true,subtree:true});lotScan(document.body);
-  setInterval(()=>{LOT.act.forEach(el=>{if(!el.isConnected)lotKill(el)});if(LOT.act.size>30){let k=LOT.act.size-30;for(const el of LOT.act){if(k<=0)break;if(!el._vis){lotKill(el);k--}}}},3000);
-  document.addEventListener("visibilitychange",()=>{try{document.hidden?lottie.freeze():lottie.unfreeze()}catch(e){}})}
-const card=(it,ins,cls="",at="",ex="")=>{ins=ins||{bd:it.id%8};const b=BD[ins.bd];const img=it.img?`<img src="${it.img}" alt="${it.n}" decoding="async" onerror="this.onerror=null;this.style.display='none';this.parentElement.innerHTML='<span style=&quot;font-size:32px&quot;>${it.e}</span>'">`:`<span style="font-size:36px">${it.e}</span>`;return `<div ${at} class="sk ${cls}" style="--c:${it.c};--b1:${b[0]};--b2:${b[1]}"><div class="gf">${it.img?"":`<div class="pat">${it.s.repeat(22)}</div>`}<div class="em"${it.lot?` data-lot="${it.lot}" data-sym="${it.s}"`:""}>${img}</div>${frm(ins)}</div><b>${it.n}</b><i>${it.p} ⭐</i>${ins.sn?`<small>#${ins.sn}</small>`:""}${ex}</div>`};
+  new MutationObserver(ms=>{const rm=[],ad=[];ms.forEach(m=>{m.removedNodes.forEach(n=>rm.push(n));m.addedNodes.forEach(n=>ad.push(n))});rm.forEach(lotDrop);ad.forEach(lotScan)}).observe(document.body,{childList:true,subtree:true});lotScan(document.body);
+  let scT;addEventListener("scroll",()=>{LOT.sc=performance.now();clearTimeout(scT);scT=setTimeout(lotSelect,160)},{capture:true,passive:true});
+  setInterval(()=>{LOT.act.forEach(el=>{if(!el.isConnected)lotKill(el)});if(LOT.act.size>20){let k=LOT.act.size-20;for(const el of LOT.act){if(k<=0)break;if(!LOT.vis.has(el)){lotKill(el);k--}}}},3000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)lotLoop()})}
+function giErr(i){const em=i.parentElement;if(em&&em.dataset.d&&i.getAttribute("src")!==em.dataset.d){i.src=em.dataset.d;em.dataset.img=em.dataset.d;if(em.dataset.ld)em.dataset.lot=em.dataset.ld;return}i.onerror=null;i.style.display="none";if(em){delete em.dataset.lot;em.insertAdjacentHTML("beforeend",'<span style="font-size:32px">'+esc0(em.dataset.e||"🎁")+'</span>')}}
+const card=(it,ins,cls="",at="",ex="")=>{ins=ins||{bd:it.id%8};const b=BD[ins.bd]||BD[0];
+  const u=GB+it.slug+"-"+gNo(it,ins),im=u+".webp",lt=u+".lottie.json";
+  const img=it.img?`<img src="${im}" alt="${it.n}" decoding="async" onerror="giErr(this)">`:`<span style="font-size:36px">${it.e}</span>`;
+  return `<div ${at} class="sk ${cls}" style="--c:${it.c};--b1:${b[0]};--b2:${b[1]}"><div class="gf">${it.img?"":`<div class="pat">${it.s.repeat(22)}</div>`}<div class="em" data-e="${it.e}"${it.img?` data-d="${it.img}" data-ld="${it.lot}" data-img="${im}" data-lot="${lt}" data-sym="${it.s}"`:""}>${img}</div>${frm(ins)}</div><b>${it.n}</b><i>${it.p} ⭐</i>${ins.sn?`<small>#${ins.sn}</small>`:""}${ex}</div>`};
 const cardI=(o,cls,at,ex)=>card(ITEMS[o.id],o,cls,at,ex);
 const total=p=>(p.bal||0)+(p.inv||[]).reduce((s,o)=>s+ITEMS[o.id].p,0);
 const gifts=p=>(p.inv||[]).reduce((s,o)=>s+ITEMS[o.id].p,0);
@@ -768,12 +817,12 @@ const openLabel=()=>{const c=CK?CK.cost*M:0;return c?`Открыть кейс �
 function btnState(){const b=$("openBtn");if(busy)return;const w=(CK&&CK.cost===0)?cdLeft():0;b.disabled=w>0;b.textContent=w>0?"⏳ "+fmtCd(w):openLabel()}
 function setM(){document.querySelectorAll(".strip-w.x").forEach((e,i)=>e.classList.toggle("hide",i+2>M));$("mult").textContent="x"+M;btnState()}
 function fillN(s,win){s.className="strip";s.style.transition="none";s.style.transform="translateX(0)";const c=CK||CASES[1];
-  s.innerHTML=Array.from({length:60},(_,i)=>{if(i===50)return win.it?card(win.it,win.ins,"won"):emptyCard("won");const x=pickC(c);return x?card(x,{bd:rnd(8),sn:1+rnd(9999)}):emptyCard()}).join("")}
-strips.forEach(s=>fillN(s,{it:pickC(CASES[1]),ins:{bd:0,sn:1}}));setM();drawCases();
+  s.innerHTML=Array.from({length:60},(_,i)=>{if(i===50)return win.it?card(win.it,win.ins,"won"):emptyCard("won");const x=pickC(c);return x?card(x,{bd:rnd(8),sn:1+rnd(9999),dv:1}):emptyCard()}).join("")}
+strips.forEach(s=>fillN(s,{it:pickC(CASES[1]),ins:{bd:0,sn:1,dv:1}}));setM();drawCases();
 function openCase(id){
   CK=CASES[id];M=1;$("mult").style.display=CK.cost===0?"none":"";$("rcases").style.display="none";$("rview").style.display="block";
   $("rtitle").textContent=CK.ico+" "+CK.n;
-  strips.forEach(s=>fillN(s,{it:pickC(CK),ins:{bd:0,sn:1}}));
+  strips.forEach(s=>fillN(s,{it:pickC(CK),ins:{bd:0,sn:1,dv:1}}));
   $("rres").textContent="Открой кейс и выбей NFT-подарок";setM();drawCatalog()}
 $("rback").onclick=()=>{if(busy)return;CK=null;$("rview").style.display="none";$("rcases").style.display="block"};
 $("mult").onclick=()=>{if(!busy&&CK&&CK.cost>0){M=M%3+1;setM()}};
