@@ -339,12 +339,20 @@ select{width:100%;padding:12px;border-radius:12px;border:1px solid #333a4d;backg
 .bioc{text-align:right;font-size:12px;color:var(--mut);margin-top:4px}
 
 /* --- настоящие Lottie-анимации подарков (как в Telegram) --- */
-.em .lt{position:absolute;inset:3%;pointer-events:none;contain:layout paint style;will-change:transform;transform:translateZ(0)}
+.em .lt{position:absolute;inset:0;pointer-events:none;contain:layout paint style;will-change:transform;transform:translateZ(0)}
 .em .lt svg{width:100%!important;height:100%!important;display:block}
 .em img,.em>span{transition:opacity .4s}
 .em.lo img,.em.lo>span{opacity:0}
 .em.lo0 img,.em.lo0>span{transition:none}
 .gf>.pat.pa{animation:fi .6s both}
+/* ник и плашка VIP всегда в одну строку; место отнимаем у правого блока с баллами, а не у ника */
+.pod .nm{flex:1 1 58%}
+.pod .nm b{flex-wrap:nowrap}
+.pod .nm b .nn{flex:0 1 auto;min-width:5ch;padding:3px 4px;margin:-3px -4px}
+.pod .nm b .vb{margin-left:6px;padding:2px 6px;font-size:9px;letter-spacing:.5px}
+.pod .tt{flex:0 1 38%;min-width:0;font-size:15px}
+.pod .tt small{white-space:normal;word-break:break-word;font-size:10px;line-height:1.25}
+
 </style>
 </head>
 <body>
@@ -481,8 +489,9 @@ function lotBuildSoon(){if(LOT.bb||!LOT.bq.length)return;LOT.bb=1;
 function lotBuild(){LOT.bb=0;const j=LOT.bq.shift();if(!j)return;const[el,u,t,bd]=j;
   try{if(el.isConnected&&el.dataset.lot===u&&!el._lt&&el._on){
     let d;try{d=JSON.parse(t)}catch(e){LOT.bad[u]=1;d=null}
+    if(d&&Array.isArray(d.assets)&&d.assets.some(x=>x&&x.p&&x.e!==1&&!/^data:/.test(x.p))){LOT.bad[u]=1;d=null}
     if(d){const box=document.createElement("div");box.className="lt";el.appendChild(box);
-      const a=lottie.loadAnimation({container:box,renderer:"svg",loop:false,autoplay:false,animationData:d,rendererSettings:{preserveAspectRatio:"xMidYMid meet",progressiveLoad:false,hideOnTransparent:true}});
+      const a=lottie.loadAnimation({container:box,renderer:"svg",loop:false,autoplay:false,animationData:d,rendererSettings:{preserveAspectRatio:"xMidYMid slice",progressiveLoad:false,hideOnTransparent:true}});
       try{a.setSubframe(true)}catch(e){}
       el._lt=a;el._box=box;el._d=d;el._t0=performance.now()-Math.random()*800;el._ph=LOT.ps++;
       const ready=()=>{if(el._rd||el._lt!==a)return;el._rd=1;try{a.goToAndStop(0,true)}catch(e){}requestAnimationFrame(()=>{if(el._lt===a)lotApply(el,bd,false)});LOT.act.add(el);LOT.bt=performance.now();lotLoop()};
